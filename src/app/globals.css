@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #fcfbf7;
+    --foreground: #1c1917;
+    --primary: #14442a;
+    --primary-foreground: #ffffff;
+    --secondary: #eee9db;
+    --secondary-foreground: #14442a;
+    --accent: #d97706;
+    --accent-foreground: #ffffff;
+    --card: #ffffff;
+    --card-foreground: #1c1917;
+    --border: #e2ddd3;
+    --muted: #f4f1ea;
+    --muted-foreground: #57534e;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+}
+
+/* Custom agricultural styling and animations */
+.tea-gradient {
+  background: linear-gradient(135deg, #0c2d1c 0%, #14442a 50%, #1b5e3a 100%);
+}
+
+.tea-card-hover {
+  transition: all 0.2s ease-in-out;
+}
+.tea-card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(20, 68, 42, 0.1), 0 8px 10px -6px rgba(20, 68, 42, 0.1);
+}
+
+/* Accessible focus outline */
+*:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
