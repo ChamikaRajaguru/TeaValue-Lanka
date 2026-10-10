@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useI18n } from '@/lib/i18n/context';
 import { UserRecord } from '@/lib/db/client';
+import { useRouter } from 'next/navigation';
 import { SavedEstimate, MarketPriceRecord } from '@/lib/engine/types';
 import {
   Sprout,
@@ -21,6 +22,7 @@ import {
 
 export default function DashboardPage() {
   const { t, language } = useI18n();
+  const router = useRouter();
 
   const [user, setUser] = useState<UserRecord | null>(null);
   const [estimates, setEstimates] = useState<SavedEstimate[]>([]);
@@ -28,14 +30,26 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    try {
+      const cached = localStorage.getItem('teavalue_user');
+      if (cached) setUser(JSON.parse(cached));
+    } catch (e) {}
+
     Promise.all([
-      fetch('/api/auth/me').then((r) => r.json()),
-      fetch('/api/estimates').then((r) => r.json()),
+      fetch('/api/auth/me', { cache: 'no-store' }).then((r) => r.json()),
+      fetch('/api/estimates', { cache: 'no-store' }).then((r) => r.json()),
       fetch('/api/factories').then((r) => r.json()),
     ])
       .then(([userData, estimatesData]) => {
-        if (userData.authenticated) {
+        if (userData.authenticated && userData.user) {
           setUser(userData.user);
+          try {
+            localStorage.setItem('teavalue_user', JSON.stringify(userData.user));
+          } catch (e) {}
+        } else {
+          // Unauthenticated users must be redirected from protected pages to login
+          router.push('/login');
+          return;
         }
         if (estimatesData.estimates) {
           setEstimates(estimatesData.estimates);
@@ -43,7 +57,7 @@ export default function DashboardPage() {
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [router]);
 
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">

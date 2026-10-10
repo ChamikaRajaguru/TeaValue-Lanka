@@ -1,3 +1,5 @@
+import { config } from 'dotenv';
+config({ path: '.env.local' });
 import { promoteUserToAdmin } from '../src/lib/auth';
 
 async function main() {

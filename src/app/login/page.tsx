@@ -32,6 +32,13 @@ export default function LoginPage() {
         throw new Error(data.error || 'Login failed');
       }
 
+      if (data.user) {
+        try {
+          localStorage.setItem('teavalue_user', JSON.stringify(data.user));
+          window.dispatchEvent(new Event('auth-change'));
+        } catch (e) {}
+      }
+
       router.push('/dashboard');
       router.refresh();
     } catch (err: any) {
