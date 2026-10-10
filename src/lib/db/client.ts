@@ -83,7 +83,7 @@ class MemoryDbStore {
 }
 
 // Singleton state
-const globalStore = (global as any).__teaValueMemoryStore || new MemoryDbStore();
+const globalStore: MemoryDbStore = (global as any).__teaValueMemoryStore || new MemoryDbStore();
 if (process.env.NODE_ENV !== 'production') {
   (global as any).__teaValueMemoryStore = globalStore;
 }
@@ -92,7 +92,7 @@ let mongoClient: MongoClient | null = null;
 let mongoDb: Db | null = null;
 let isMongoConnected = false;
 
-export async function getDbConnection() {
+export async function getDbConnection(): Promise<{ isMongo: boolean; db: Db | null; memory: MemoryDbStore }> {
   const uri = process.env.MONGODB_URI;
   const dbName = process.env.MONGODB_DB_NAME || 'teavalue_lanka';
 

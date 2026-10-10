@@ -8,8 +8,10 @@ export interface AuthSession {
   expiresAt: string;
 }
 
-// In-memory sessions store fallback
-const memorySessions = new Map<string, AuthSession>();
+// In-memory sessions store fallback persisted across Next.js reloads
+const memorySessions: Map<string, AuthSession> =
+  (globalThis as any).__teaValueMemorySessions || new Map<string, AuthSession>();
+(globalThis as any).__teaValueMemorySessions = memorySessions;
 
 // Secure hashing using standard Node.js crypto
 export function hashPassword(password: string): string {
@@ -36,25 +38,28 @@ export interface StoredAccount {
   passwordHash: string;
 }
 
-const memoryAccounts = new Map<string, StoredAccount>([
-  // Seed initial demo admin & farmer hashes
-  [
-    'admin@teavalue.lk',
-    {
-      userId: 'usr-admin-1',
-      email: 'admin@teavalue.lk',
-      passwordHash: hashPassword('AdminPass2026!'),
-    },
-  ],
-  [
-    'farmer@teavalue.lk',
-    {
-      userId: 'usr-farmer-1',
-      email: 'farmer@teavalue.lk',
-      passwordHash: hashPassword('FarmerPass2026!'),
-    },
-  ],
-]);
+const memoryAccounts: Map<string, StoredAccount> =
+  (globalThis as any).__teaValueMemoryAccounts ||
+  new Map<string, StoredAccount>([
+    // Seed initial demo admin & farmer hashes
+    [
+      'admin@teavalue.lk',
+      {
+        userId: 'usr-admin-1',
+        email: 'admin@teavalue.lk',
+        passwordHash: hashPassword('AdminPass2026!'),
+      },
+    ],
+    [
+      'farmer@teavalue.lk',
+      {
+        userId: 'usr-farmer-1',
+        email: 'farmer@teavalue.lk',
+        passwordHash: hashPassword('FarmerPass2026!'),
+      },
+    ],
+  ]);
+(globalThis as any).__teaValueMemoryAccounts = memoryAccounts;
 
 export async function registerFarmer(data: {
   name: string;

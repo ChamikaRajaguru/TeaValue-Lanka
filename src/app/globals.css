@@ -22,8 +22,20 @@
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-feature-settings: "rlig" 1, "calt" 1;
+    font-family: var(--font-inter), var(--font-sinhala), 'Noto Sans Sinhala', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Optimal Sinhala glyph rendering */
+  h1, h2, h3, h4, h5, h6 {
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+  }
+
+  p, span, label, input, select, textarea, button {
+    font-family: var(--font-sinhala), var(--font-inter), 'Noto Sans Sinhala', 'Inter', 'Segoe UI', sans-serif;
   }
 }
 
