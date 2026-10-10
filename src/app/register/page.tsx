@@ -61,16 +61,16 @@ export default function RegisterPage() {
   return (
     <div className="max-w-lg mx-auto px-4 py-16 space-y-8">
       <div className="text-center space-y-2">
-        <div className="w-12 h-12 bg-tea-800 text-tea-100 rounded-2xl flex items-center justify-center mx-auto shadow-md">
-          <Sprout className="w-7 h-7 text-leaf-400" />
+        <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-teal-700 text-white rounded-2xl flex items-center justify-center mx-auto shadow-md shadow-emerald-700/20">
+          <Sprout className="w-7 h-7 text-white" />
         </div>
-        <h1 className="text-2xl font-extrabold text-tea-950">Farmer Account Registration</h1>
+        <h1 className="text-2xl font-extrabold text-emerald-950">Farmer Account Registration</h1>
         <p className="text-xs text-stone-600">
           Create your Sri Lankan smallholder profile to save estimates and compare regional factories.
         </p>
       </div>
 
-      <div className="bg-white rounded-3xl p-8 border border-cream-200 shadow-md space-y-6">
+      <div className="bg-white rounded-3xl p-8 border border-emerald-100 shadow-[0_4px_25px_-4px_rgba(6,78,59,0.06)] space-y-6">
         {error && (
           <div className="bg-red-50 text-red-800 text-xs p-3 rounded-xl border border-red-200 flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-red-500 shrink-0" />
@@ -79,8 +79,8 @@ export default function RegisterPage() {
         )}
 
         {success && (
-          <div className="bg-leaf-50 text-tea-900 text-xs p-4 rounded-xl border border-leaf-300 flex items-center gap-2 font-medium">
-            <CheckCircle2 className="w-5 h-5 text-leaf-600 shrink-0" />
+          <div className="bg-emerald-50 text-emerald-900 text-xs p-4 rounded-xl border border-emerald-300 flex items-center gap-2 font-medium">
+            <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
             <span>Account created successfully! Redirecting to login...</span>
           </div>
         )}
@@ -96,7 +96,7 @@ export default function RegisterPage() {
               placeholder="e.g. Sunil Rajapaksa"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
             />
           </div>
 
@@ -110,7 +110,7 @@ export default function RegisterPage() {
               placeholder="sunil@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
             />
           </div>
 
@@ -125,7 +125,7 @@ export default function RegisterPage() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
             />
           </div>
 
@@ -137,7 +137,7 @@ export default function RegisterPage() {
               <select
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
               >
                 <option value="Galle">Galle</option>
                 <option value="Matara">Matara</option>
@@ -157,7 +157,7 @@ export default function RegisterPage() {
                 placeholder="e.g. Hiniduma"
                 value={locality}
                 onChange={(e) => setLocality(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
               />
             </div>
           </div>
@@ -173,7 +173,7 @@ export default function RegisterPage() {
                   name="prefLang"
                   checked={preferredLanguage === 'en'}
                   onChange={() => setPreferredLanguage('en')}
-                  className="text-tea-800 focus:ring-tea-600"
+                  className="text-emerald-700 focus:ring-emerald-600"
                 />
                 English
               </label>
@@ -183,7 +183,7 @@ export default function RegisterPage() {
                   name="prefLang"
                   checked={preferredLanguage === 'si'}
                   onChange={() => setPreferredLanguage('si')}
-                  className="text-tea-800 focus:ring-tea-600"
+                  className="text-emerald-700 focus:ring-emerald-600"
                 />
                 සිංහල (Sinhala)
               </label>
@@ -193,16 +193,16 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading || success}
-            className="w-full py-3 bg-tea-800 hover:bg-tea-900 text-white font-bold text-sm rounded-xl shadow-md transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
+            className="w-full py-3 glow-btn text-white font-bold text-sm rounded-xl shadow-glow transition-all disabled:opacity-50 flex items-center justify-center gap-2 mt-2"
           >
             <UserPlus className="w-4 h-4" />
             <span>{loading ? 'Creating Account...' : 'Register as Farmer'}</span>
           </button>
         </form>
 
-        <div className="pt-4 border-t border-cream-200 text-center text-xs text-stone-600">
+        <div className="pt-4 border-t border-stone-100 text-center text-xs text-stone-600">
           Already registered?{' '}
-          <Link href="/login" className="text-tea-800 font-bold hover:underline">
+          <Link href="/login" className="text-emerald-800 font-bold hover:underline">
             Sign In here
           </Link>
         </div>

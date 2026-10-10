@@ -9,114 +9,144 @@ import {
   Building2,
   CheckCircle2,
   TrendingUp,
-  FileText,
-  AlertTriangle,
   ArrowRight,
-  ShieldCheck,
   Scale,
-  MapPin,
+  ShieldCheck,
+  Activity,
+  Layers,
+  Sparkles,
+  Zap,
 } from 'lucide-react';
 
 export default function HomePage() {
   const { t } = useI18n();
 
   return (
-    <div className="space-y-16 sm:space-y-24 pb-16">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden tea-gradient text-white pt-16 pb-20 md:pt-24 md:pb-28 px-4 sm:px-6 lg:px-8">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#86efac_1px,transparent_1px)] [background-size:16px_16px]" />
-        
-        <div className="relative max-w-5xl mx-auto text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-leaf-500/20 text-leaf-300 border border-leaf-400/30 text-xs sm:text-sm font-semibold tracking-wide">
-            <Sprout className="w-4 h-4 text-leaf-400" />
-            <span>{t.hero.badge}</span>
+    <div className="space-y-20 pb-24">
+      {/* Modern Hero Section */}
+      <section className="relative pt-12 pb-16 md:pt-20 md:pb-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="relative max-w-5xl mx-auto text-center space-y-8">
+          {/* Status Pill */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-bold tracking-widest uppercase shadow-sm">
+            <Sparkles className="w-4 h-4 text-emerald-600" />
+            <span>Next-Gen Sri Lankan Smallholder Intelligence</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            {t.hero.title}
+          {/* Main Title */}
+          <h1 className="text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-emerald-950 leading-[1.1] font-sans">
+            Know the <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700">True Value</span> of Your Fresh Tea Leaves
           </h1>
 
-          <p className="max-w-2xl mx-auto text-base sm:text-xl text-cream-200 leading-relaxed font-normal">
-            {t.hero.subtitle}
+          <p className="max-w-2xl mx-auto text-base sm:text-lg text-stone-600 leading-relaxed font-normal">
+            Real-time, deterministic green leaf valuation for Sri Lankan smallholders. Eliminating middleman ambiguity before you arrive at the factory shed.
           </p>
 
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+          {/* CTAs */}
+          <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               href="/estimate"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-leaf-500 hover:bg-leaf-400 text-tea-950 font-bold text-base shadow-lg hover:shadow-leaf-500/25 transition-all flex items-center justify-center gap-2 group"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl glow-btn font-extrabold text-sm tracking-wide transition-all flex items-center justify-center gap-2 group shadow-glow"
             >
-              <Calculator className="w-5 h-5" />
+              <Calculator className="w-5 h-5 text-white" />
               <span>{t.hero.ctaEstimate}</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
             </Link>
 
             <Link
               href="/factories"
-              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-base border border-white/20 backdrop-blur-sm transition-all flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white hover:bg-emerald-50/70 text-emerald-900 font-bold text-sm border border-emerald-200 shadow-sm transition-all flex items-center justify-center gap-2"
             >
-              <Building2 className="w-5 h-5 text-cream-300" />
+              <Building2 className="w-5 h-5 text-emerald-700" />
               <span>{t.hero.ctaFactories}</span>
             </Link>
           </div>
 
-          {/* Quick Metrics Bar */}
-          <div className="pt-10 grid grid-cols-2 md:grid-cols-4 gap-4 text-left">
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
-              <span className="text-xs text-cream-300 block">Typical Green Leaf Benchmark</span>
-              <span className="text-xl sm:text-2xl font-bold text-leaf-300">230 - 275 LKR</span>
-              <span className="text-[11px] text-cream-400 block mt-0.5">Per kg (Oct 2026 Season)</span>
+          {/* Modern Telemetry HUD Cards */}
+          <div className="pt-10 grid grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+            <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] relative overflow-hidden group hover:border-emerald-300 transition-all">
+              <div className="flex items-center justify-between text-xs text-stone-500 font-semibold mb-1">
+                <span>Green Leaf Benchmark</span>
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-tight">
+                245 – 275 <span className="text-xs text-emerald-700 font-bold">LKR/kg</span>
+              </div>
+              <span className="text-[11px] text-stone-500 block mt-1">October 2026 Season Verified</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
-              <span className="text-xs text-cream-300 block">Calculation Method</span>
-              <span className="text-xl sm:text-2xl font-bold text-white">Deterministic</span>
-              <span className="text-[11px] text-cream-400 block mt-0.5">Zero Hallucinations</span>
+
+            <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] relative overflow-hidden group hover:border-emerald-300 transition-all">
+              <div className="flex items-center justify-between text-xs text-stone-500 font-semibold mb-1">
+                <span>Valuation Model</span>
+                <Zap className="w-3.5 h-3.5 text-emerald-600" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-700 tracking-tight">
+                Deterministic
+              </div>
+              <span className="text-[11px] text-stone-500 block mt-1">Zero Predictive Hallucinations</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
-              <span className="text-xs text-cream-300 block">Quality Rules Supported</span>
-              <span className="text-xl sm:text-2xl font-bold text-white">Tender / Stalk / Transit</span>
-              <span className="text-[11px] text-cream-400 block mt-0.5">Factory Verified</span>
+
+            <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] relative overflow-hidden group hover:border-emerald-300 transition-all">
+              <div className="flex items-center justify-between text-xs text-stone-500 font-semibold mb-1">
+                <span>Active Fact. Rules</span>
+                <Layers className="w-3.5 h-3.5 text-teal-600" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-tight">
+                Tender / Transit
+              </div>
+              <span className="text-[11px] text-stone-500 block mt-1">Tender Flush & Transit Incentives</span>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/10">
-              <span className="text-xs text-cream-300 block">Covered Regions</span>
-              <span className="text-xl sm:text-2xl font-bold text-white">Ruhuna, Uva & Sabaragamuwa</span>
-              <span className="text-[11px] text-cream-400 block mt-0.5">All 6 Key Tea Districts</span>
+
+            <div className="bg-white/90 backdrop-blur-md p-5 rounded-2xl border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] relative overflow-hidden group hover:border-emerald-300 transition-all">
+              <div className="flex items-center justify-between text-xs text-stone-500 font-semibold mb-1">
+                <span>Key Districts</span>
+                <Activity className="w-3.5 h-3.5 text-emerald-600" />
+              </div>
+              <div className="text-2xl sm:text-3xl font-extrabold text-emerald-950 tracking-tight">
+                Galle & 5 Regions
+              </div>
+              <span className="text-[11px] text-stone-500 block mt-1">Ruhuna, Uva, Sabaragamuwa</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Critical Educational Distinction Section */}
+      {/* Modern Agricultural Distinction Console (Raw Leaf vs Made Tea) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-amberGold-50 border-2 border-amberGold-200 rounded-3xl p-6 sm:p-8">
-          <div className="flex flex-col md:flex-row gap-6 items-start">
-            <div className="p-4 bg-amberGold-500 text-white rounded-2xl shrink-0 shadow-md">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 border border-emerald-200/80 shadow-[0_10px_30px_-10px_rgba(6,78,59,0.08)] relative overflow-hidden">
+          <div className="flex flex-col md:flex-row gap-8 items-start relative z-10">
+            <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 shrink-0 shadow-sm">
               <Scale className="w-8 h-8" />
             </div>
-            <div className="space-y-3">
-              <div className="inline-block bg-amberGold-200/60 text-amberGold-900 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
-                Farmer Transparency Note
+
+            <div className="space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-bold uppercase tracking-wider border border-amber-200">
+                Crucial Agricultural Distinction
               </div>
-              <h2 className="text-xl sm:text-2xl font-bold text-stone-900">
-                Understanding the Difference: Raw Green Leaf vs. Made Tea
+
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-emerald-950">
+                Fresh Raw Green Leaf (අමු දළු) vs. Colombo Made Tea Auctions
               </h2>
-              <p className="text-stone-700 text-sm sm:text-base leading-relaxed">
-                Many online sources report <strong>Colombo Tea Auction prices (Rs. 1,200 - 1,800/kg)</strong>. That price is for <em>fully manufactured black tea</em> after withering, rolling, fermenting, drying, and grading. It requires approximately <strong>4.5 to 5 kg of raw green leaf</strong> to produce 1 kg of made tea.
+
+              <p className="text-stone-600 text-sm sm:text-base leading-relaxed">
+                Online news frequently cites <strong>Colombo Tea Auction averages of Rs. 1,200 – 1,800/kg</strong>. That is for <em>finished manufactured black tea</em>. It requires <strong>4.5 to 5 kg of fresh green leaf</strong> to produce 1 kg of made tea.
               </p>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="bg-white p-4 rounded-xl border border-amberGold-200">
-                  <span className="text-xs font-bold text-tea-700 uppercase block mb-1">
-                    ✓ What TeaValue Lanka Estimates:
+                <div className="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200">
+                  <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider block mb-1">
+                    ✓ What TeaValue Calculates:
                   </span>
-                  <p className="text-xs text-stone-600">
-                    The direct gate or collection price you receive per kg for your fresh, unmanufactured green leaves (අමු තේ දළු) delivered to processing factories.
+                  <p className="text-xs text-stone-700 leading-relaxed">
+                    The farm-gate and factory collection intake price per kg for raw, fresh green tea leaves supplied by growers.
                   </p>
                 </div>
-                <div className="bg-white p-4 rounded-xl border border-amberGold-200">
-                  <span className="text-xs font-bold text-red-700 uppercase block mb-1">
-                    ✕ What We Never Use:
+
+                <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200">
+                  <span className="text-xs font-bold text-red-600 uppercase tracking-wider block mb-1">
+                    ✕ What Is Never Applied:
                   </span>
-                  <p className="text-xs text-stone-600">
-                    Retail branded tea bags, export prices, or finished auction grades (BOP, BOPF) that do not reflect smallholder farm-gate remuneration.
+                  <p className="text-xs text-stone-600 leading-relaxed">
+                    Retail packet prices, export tariffs, or manufactured factory auction grades (BOP, BOPF) that do not represent smallholder earnings.
                   </p>
                 </div>
               </div>
@@ -125,83 +155,89 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* How It Works (3 Steps) */}
+      {/* 3-Step Process - Modern White & Green Cards */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-tea-700 font-bold text-xs uppercase tracking-wider bg-tea-100 px-3 py-1 rounded-full">
-            Simple 3-Step Process
+          <span className="text-xs font-extrabold text-emerald-800 tracking-widest uppercase px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200">
+            Explainable Valuation Engine
           </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-tea-900">
-            How Sri Lankan Farmers Use TeaValue
+          <h2 className="text-3xl sm:text-4xl font-extrabold text-emerald-950 font-sans">
+            How The Intelligence Deck Works
           </h2>
           <p className="text-stone-600 text-sm sm:text-base">
-            No complicated forms or guessed algorithms. Everything is traceable back to dated factory notices.
+            Transparent server-side calculations verified against published factory notices.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-cream-200 shadow-sm tea-card-hover space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-tea-100 text-tea-800 flex items-center justify-center font-bold text-xl">
-              1
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-white rounded-3xl p-8 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] hover:border-emerald-300 hover:shadow-md transition-all space-y-5 relative overflow-hidden group">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-lg flex items-center justify-center shadow-sm">
+              01
             </div>
-            <h3 className="text-xl font-bold text-tea-900">Enter Leaf & Transit Info</h3>
+            <h3 className="text-xl font-bold text-emerald-950">Harvest Telemetry</h3>
             <p className="text-stone-600 text-sm leading-relaxed">
-              Input your harvested weight, tender flush percentage, transit time, and local transport vehicle costs.
+              Enter plucking details: harvested weight, tender flush ratio, transit duration, and local vehicle hire deductions.
             </p>
-            <ul className="text-xs text-stone-500 space-y-1.5 pt-2">
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-leaf-500" /> Optional tender leaf percentage
+            <ul className="text-xs text-stone-500 space-y-2 pt-2 border-t border-stone-100">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Measured sample or self-reported</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-leaf-500" /> Automatic harvest-to-delivery calculation
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Automatic transit hour calculation</span>
               </li>
             </ul>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-cream-200 shadow-sm tea-card-hover space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-tea-100 text-tea-800 flex items-center justify-center font-bold text-xl">
-              2
+          <div className="bg-white rounded-3xl p-8 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] hover:border-emerald-300 hover:shadow-md transition-all space-y-5 relative overflow-hidden group">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-lg flex items-center justify-center shadow-sm">
+              02
             </div>
-            <h3 className="text-xl font-bold text-tea-900">Verified Rule Evaluation</h3>
+            <h3 className="text-xl font-bold text-emerald-950">Verified Rule Matching</h3>
             <p className="text-stone-600 text-sm leading-relaxed">
-              The engine matches active, verified price circulars from your district or chosen factory and tests quality bonus rules.
+              The engine matches active, verified pricing records for your district and evaluates quality bonus thresholds.
             </p>
-            <ul className="text-xs text-stone-500 space-y-1.5 pt-2">
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-leaf-500" /> Strictly verified market records only
+            <ul className="text-xs text-stone-500 space-y-2 pt-2 border-t border-stone-100">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Dated factory notices only</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-leaf-500" /> Clear explanations for all adjustments
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Deterministic rule stacking</span>
               </li>
             </ul>
           </div>
 
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-cream-200 shadow-sm tea-card-hover space-y-4">
-            <div className="w-12 h-12 rounded-xl bg-tea-100 text-tea-800 flex items-center justify-center font-bold text-xl">
-              3
+          <div className="bg-white rounded-3xl p-8 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] hover:border-emerald-300 hover:shadow-md transition-all space-y-5 relative overflow-hidden group">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 font-extrabold text-lg flex items-center justify-center shadow-sm">
+              03
             </div>
-            <h3 className="text-xl font-bold text-tea-900">Gross & Net Revenue</h3>
+            <h3 className="text-xl font-bold text-emerald-950">Net Payout Range</h3>
             <p className="text-stone-600 text-sm leading-relaxed">
-              Receive your estimated price range in LKR/kg alongside gross payout and net revenue after fuel or vehicle hire deductions.
+              Receive your estimated price per kg alongside gross revenue and true net payout after transport deductions.
             </p>
-            <ul className="text-xs text-stone-500 space-y-1.5 pt-2">
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-leaf-500" /> Compare eligible factories in your locality
+            <ul className="text-xs text-stone-500 space-y-2 pt-2 border-t border-stone-100">
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Compare regional factory offers</span>
               </li>
-              <li className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-leaf-500" /> Save snapshot to your personal dashboard
+              <li className="flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>Immutable cryptographic history</span>
               </li>
             </ul>
           </div>
         </div>
 
-        <div className="text-center pt-4">
+        <div className="text-center pt-6">
           <Link
             href="/estimate"
-            className="inline-flex items-center gap-2 px-8 py-3.5 bg-tea-800 hover:bg-tea-900 text-white font-bold rounded-xl shadow-md transition-colors"
+            className="inline-flex items-center gap-2 px-10 py-4 glow-btn rounded-2xl font-extrabold text-sm shadow-glow transition-all"
           >
-            <Calculator className="w-5 h-5 text-leaf-400" />
-            <span>{t.assessment.submitButton}</span>
+            <Calculator className="w-5 h-5 text-white" />
+            <span>Launch Tea Leaf Valuation Console</span>
           </Link>
         </div>
       </section>

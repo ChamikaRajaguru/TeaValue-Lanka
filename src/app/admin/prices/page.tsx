@@ -118,12 +118,12 @@ export default function AdminPricesPage() {
         <div>
           <Link
             href="/admin"
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-tea-800 hover:text-tea-950 mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800 hover:text-emerald-950 mb-2 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Portal Overview</span>
           </Link>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-tea-950">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-950">
             {t.admin.tabPrices}
           </h1>
           <p className="text-xs sm:text-sm text-stone-600">
@@ -133,7 +133,7 @@ export default function AdminPricesPage() {
 
         <button
           onClick={() => setShowAddModal(true)}
-          className="px-4 py-2.5 bg-tea-800 hover:bg-tea-900 text-white font-bold text-xs rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
+          className="px-4 py-2.5 glow-btn text-white font-bold text-xs rounded-xl shadow-glow transition-all flex items-center gap-1.5"
         >
           <Plus className="w-4 h-4" />
           <span>{t.admin.addNewPrice}</span>
@@ -141,15 +141,15 @@ export default function AdminPricesPage() {
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 border-b border-cream-200 pb-3">
+      <div className="flex items-center gap-2 border-b border-stone-200 pb-3">
         {['all', 'pending', 'verified', 'retired', 'rejected'].map((st) => (
           <button
             key={st}
             onClick={() => setFilterStatus(st)}
             className={`px-3 py-1.5 text-xs font-semibold rounded-lg capitalize transition-colors ${
               filterStatus === st
-                ? 'bg-tea-800 text-white shadow-sm'
-                : 'text-stone-600 hover:bg-cream-100'
+                ? 'bg-emerald-800 text-white shadow-sm'
+                : 'text-stone-600 hover:bg-emerald-50'
             }`}
           >
             {st}
@@ -165,10 +165,10 @@ export default function AdminPricesPage() {
           No market price records found in this category.
         </div>
       ) : (
-        <div className="bg-white rounded-2xl border border-cream-200 overflow-hidden shadow-sm">
+        <div className="bg-white rounded-2xl border border-emerald-100 overflow-hidden shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)]">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-cream-100 text-stone-700 font-semibold border-b border-cream-200">
+              <thead className="bg-emerald-50 text-emerald-950 font-semibold border-b border-emerald-100">
                 <tr>
                   <th className="p-3.5">Source & Reference</th>
                   <th className="p-3.5">District / Locality</th>
@@ -179,11 +179,11 @@ export default function AdminPricesPage() {
                   <th className="p-3.5 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-cream-200">
+              <tbody className="divide-y divide-stone-100">
                 {filtered.map((item) => (
-                  <tr key={item.id} className="hover:bg-cream-50/50">
+                  <tr key={item.id} className="hover:bg-emerald-50/40 transition-colors">
                     <td className="p-3.5">
-                      <div className="font-bold text-tea-950">{item.sourceName}</div>
+                      <div className="font-bold text-stone-900">{item.sourceName}</div>
                       {item.sourceExcerpt && (
                         <div className="text-[11px] text-stone-500 line-clamp-1 max-w-xs">
                           {item.sourceExcerpt}
@@ -195,13 +195,13 @@ export default function AdminPricesPage() {
                       <span className="font-semibold text-stone-900">{item.district}</span>
                       {item.locality && <span className="text-stone-500 block">{item.locality}</span>}
                     </td>
-                    <td className="p-3.5 font-bold text-tea-900 text-sm">
+                    <td className="p-3.5 font-bold text-emerald-700 text-sm">
                       Rs. {item.minPrice} – {item.maxPrice}
                     </td>
                     <td className="p-3.5">
                       <span className="capitalize">{item.priceBasis}</span>
                       {item.qualityCategoryRef && (
-                        <span className="block text-[10px] text-tea-700 font-medium">
+                        <span className="block text-[10px] text-emerald-700 font-medium">
                           {item.qualityCategoryRef}
                         </span>
                       )}
@@ -213,9 +213,9 @@ export default function AdminPricesPage() {
                       <span
                         className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                           item.verificationStatus === 'verified'
-                            ? 'bg-leaf-100 text-leaf-800'
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
                             : item.verificationStatus === 'pending'
-                            ? 'bg-amberGold-100 text-amberGold-800'
+                            ? 'bg-amber-100 text-amber-800 border border-amber-200'
                             : 'bg-stone-100 text-stone-600'
                         }`}
                       >

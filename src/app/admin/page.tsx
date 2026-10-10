@@ -76,13 +76,13 @@ export default function AdminDashboardPage() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-cream-200 pb-6">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-stone-200 pb-6">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amberGold-100 text-amberGold-900 border border-amberGold-300 text-xs font-bold uppercase tracking-wider mb-2">
-            <ShieldCheck className="w-4 h-4 text-amberGold-700" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-900 border border-amber-200 text-xs font-bold uppercase tracking-wider mb-2">
+            <ShieldCheck className="w-4 h-4 text-amber-600" />
             <span>Administrative Control Portal</span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold text-tea-950">
+          <h1 className="text-2xl sm:text-4xl font-extrabold text-emerald-950">
             {t.admin.title}
           </h1>
           <p className="text-xs sm:text-sm text-stone-600">
@@ -93,19 +93,19 @@ export default function AdminDashboardPage() {
         <div className="flex flex-wrap gap-2">
           <Link
             href="/admin/prices"
-            className="px-4 py-2 bg-tea-800 hover:bg-tea-900 text-white font-bold text-xs rounded-xl shadow-sm transition-colors"
+            className="px-4 py-2 glow-btn text-white font-bold text-xs rounded-xl shadow-glow transition-all"
           >
             Manage Prices ({pendingCount} Pending)
           </Link>
           <Link
             href="/admin/factories"
-            className="px-4 py-2 bg-cream-200 hover:bg-cream-300 text-tea-950 font-bold text-xs rounded-xl transition-colors"
+            className="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-bold text-xs rounded-xl transition-colors"
           >
             Factories
           </Link>
           <Link
             href="/admin/rules"
-            className="px-4 py-2 bg-cream-200 hover:bg-cream-300 text-tea-950 font-bold text-xs rounded-xl transition-colors"
+            className="px-4 py-2 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 border border-emerald-200 font-bold text-xs rounded-xl transition-colors"
           >
             Pricing Rules
           </Link>
@@ -121,7 +121,7 @@ export default function AdminDashboardPage() {
           </p>
           <Link
             href="/login"
-            className="inline-block px-4 py-2 bg-tea-800 text-white font-bold text-xs rounded-xl"
+            className="inline-block px-4 py-2 glow-btn text-white font-bold text-xs rounded-xl"
           >
             Sign in as Admin
           </Link>
@@ -130,23 +130,23 @@ export default function AdminDashboardPage() {
 
       {/* Metrics Row */}
       <div className="grid grid-cols-1 sm:grid-cols-4 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-cream-200 shadow-sm space-y-1">
+        <div className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] space-y-1">
           <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
             Verified Price Records
           </span>
-          <div className="text-3xl font-extrabold text-leaf-600">{verifiedCount}</div>
+          <div className="text-3xl font-extrabold text-emerald-700">{verifiedCount}</div>
           <span className="text-[11px] text-stone-400">Available to farmer calculators</span>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-amberGold-200 bg-amberGold-50/30 shadow-sm space-y-1">
-          <span className="text-xs font-semibold text-amberGold-800 uppercase tracking-wider">
+        <div className="bg-white p-6 rounded-2xl border border-amber-200 bg-amber-50/40 shadow-sm space-y-1">
+          <span className="text-xs font-semibold text-amber-900 uppercase tracking-wider">
             Pending Candidates
           </span>
-          <div className="text-3xl font-extrabold text-amberGold-700">{pendingCount}</div>
-          <span className="text-[11px] text-amberGold-600">Awaiting admin verification</span>
+          <div className="text-3xl font-extrabold text-amber-700">{pendingCount}</div>
+          <span className="text-[11px] text-amber-800">Awaiting admin verification</span>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-cream-200 shadow-sm space-y-1">
+        <div className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] space-y-1">
           <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
             Retired Records
           </span>
@@ -154,24 +154,24 @@ export default function AdminDashboardPage() {
           <span className="text-[11px] text-stone-400">Archived from active engines</span>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl border border-cream-200 shadow-sm space-y-1">
+        <div className="bg-white p-6 rounded-2xl border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] space-y-1">
           <span className="text-xs font-semibold text-stone-500 uppercase tracking-wider">
             Data Freshness
           </span>
-          <div className="text-xl font-bold text-tea-900 pt-1">October 2026</div>
+          <div className="text-xl font-bold text-emerald-950 pt-1">October 2026</div>
           <span className="text-[11px] text-stone-400">Current season benchmark active</span>
         </div>
       </div>
 
       {/* Gemini Price Discovery Section */}
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-cream-200 shadow-sm space-y-6">
-        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-cream-200 pb-4">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-emerald-100 shadow-[0_4px_25px_-4px_rgba(6,78,59,0.06)] space-y-6">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-3 border-b border-stone-100 pb-4">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-amberGold-100 text-amberGold-800 flex items-center justify-center font-bold">
-              <Sparkles className="w-4 h-4 text-amberGold-600" />
+            <div className="w-8 h-8 rounded-lg bg-amber-100 text-amber-800 flex items-center justify-center font-bold">
+              <Sparkles className="w-4 h-4 text-amber-600" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-tea-950">
+              <h2 className="text-lg font-bold text-emerald-950">
                 Discover Market Price Candidates (Gemini)
               </h2>
               <p className="text-xs text-stone-500">
@@ -179,7 +179,7 @@ export default function AdminDashboardPage() {
               </p>
             </div>
           </div>
-          <div className="text-[11px] text-stone-500 bg-cream-100 px-3 py-1.5 rounded-lg border border-cream-200">
+          <div className="text-[11px] text-emerald-900 bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200">
             External candidates enter <strong>Pending</strong> state. Zero hallucinated data.
           </div>
         </div>
@@ -192,7 +192,7 @@ export default function AdminDashboardPage() {
             <select
               value={discoverDistrict}
               onChange={(e) => setDiscoverDistrict(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+              className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
             >
               <option value="Galle">Galle</option>
               <option value="Matara">Matara</option>
@@ -206,15 +206,15 @@ export default function AdminDashboardPage() {
           <button
             type="submit"
             disabled={isDiscovering}
-            className="w-full sm:w-auto px-6 py-2.5 bg-tea-800 hover:bg-tea-900 text-white font-bold text-xs rounded-xl shadow-sm transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            className="w-full sm:w-auto px-6 py-2.5 glow-btn text-white font-bold text-xs rounded-xl shadow-glow transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            <Search className="w-4 h-4 text-leaf-400" />
+            <Search className="w-4 h-4 text-white" />
             <span>{isDiscovering ? 'Searching Publications...' : t.admin.discoverAction}</span>
           </button>
         </form>
 
         {discoverMessage && (
-          <div className="p-4 bg-tea-50 text-tea-900 rounded-xl border border-tea-200 text-xs font-medium">
+          <div className="p-4 bg-emerald-50 text-emerald-900 rounded-xl border border-emerald-200 text-xs font-medium">
             {discoverMessage}
           </div>
         )}
@@ -224,12 +224,12 @@ export default function AdminDashboardPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <Link
           href="/admin/prices"
-          className="bg-white p-6 rounded-2xl border border-cream-200 hover:border-tea-400 shadow-sm transition-all space-y-2 group"
+          className="bg-white p-6 rounded-2xl border border-emerald-100 hover:border-emerald-300 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] hover:shadow-md transition-all space-y-2 group"
         >
-          <div className="w-10 h-10 rounded-xl bg-tea-50 text-tea-800 flex items-center justify-center group-hover:bg-tea-100 transition-colors">
-            <DollarSign className="w-5 h-5 text-tea-700" />
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+            <DollarSign className="w-5 h-5 text-emerald-700" />
           </div>
-          <h3 className="font-bold text-tea-950 text-base">Market Price Records</h3>
+          <h3 className="font-bold text-emerald-950 text-base">Market Price Records</h3>
           <p className="text-xs text-stone-500">
             Review Gemini candidates, verify factory quotes, and retire outdated records.
           </p>
@@ -237,12 +237,12 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/factories"
-          className="bg-white p-6 rounded-2xl border border-cream-200 hover:border-tea-400 shadow-sm transition-all space-y-2 group"
+          className="bg-white p-6 rounded-2xl border border-emerald-100 hover:border-emerald-300 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] hover:shadow-md transition-all space-y-2 group"
         >
-          <div className="w-10 h-10 rounded-xl bg-tea-50 text-tea-800 flex items-center justify-center group-hover:bg-tea-100 transition-colors">
-            <Building2 className="w-5 h-5 text-tea-700" />
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+            <Building2 className="w-5 h-5 text-emerald-700" />
           </div>
-          <h3 className="font-bold text-tea-950 text-base">Factory Registry</h3>
+          <h3 className="font-bold text-emerald-950 text-base">Factory Registry</h3>
           <p className="text-xs text-stone-500">
             Register processing factories, collection route services, and payment terms.
           </p>
@@ -250,12 +250,12 @@ export default function AdminDashboardPage() {
 
         <Link
           href="/admin/audit"
-          className="bg-white p-6 rounded-2xl border border-cream-200 hover:border-tea-400 shadow-sm transition-all space-y-2 group"
+          className="bg-white p-6 rounded-2xl border border-emerald-100 hover:border-emerald-300 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] hover:shadow-md transition-all space-y-2 group"
         >
-          <div className="w-10 h-10 rounded-xl bg-tea-50 text-tea-800 flex items-center justify-center group-hover:bg-tea-100 transition-colors">
-            <ClipboardList className="w-5 h-5 text-tea-700" />
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-800 flex items-center justify-center group-hover:bg-emerald-100 transition-colors">
+            <ClipboardList className="w-5 h-5 text-emerald-700" />
           </div>
-          <h3 className="font-bold text-tea-950 text-base">Audit Trail & Security</h3>
+          <h3 className="font-bold text-emerald-950 text-base">Audit Trail & Security</h3>
           <p className="text-xs text-stone-500">
             Inspect timestamps and user identities for price verifications and promotions.
           </p>

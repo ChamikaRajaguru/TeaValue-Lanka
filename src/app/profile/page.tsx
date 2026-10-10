@@ -48,7 +48,7 @@ export default function ProfilePage() {
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-tea-950">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-950">
           Farmer Estate Profile
         </h1>
         <p className="text-xs sm:text-sm text-stone-600">
@@ -56,10 +56,10 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-cream-200 shadow-sm space-y-6">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-emerald-100 shadow-[0_4px_25px_-4px_rgba(6,78,59,0.06)] space-y-6">
         {savedSuccess && (
-          <div className="p-4 bg-leaf-50 text-tea-900 rounded-xl border border-leaf-300 text-xs font-semibold flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-leaf-600" />
+          <div className="p-4 bg-emerald-50 text-emerald-900 rounded-xl border border-emerald-300 text-xs font-semibold flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-emerald-600" />
             <span>Profile settings saved successfully!</span>
           </div>
         )}
@@ -74,7 +74,7 @@ export default function ProfilePage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
               />
             </div>
 
@@ -86,7 +86,7 @@ export default function ProfilePage() {
                 type="email"
                 disabled
                 value={user?.email || ''}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-cream-200 bg-cream-100 text-stone-500 text-sm cursor-not-allowed"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 bg-stone-100 text-stone-500 text-sm cursor-not-allowed"
               />
             </div>
 
@@ -97,7 +97,7 @@ export default function ProfilePage() {
               <select
                 value={district}
                 onChange={(e) => setDistrict(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
               >
                 <option value="Galle">Galle</option>
                 <option value="Matara">Matara</option>
@@ -116,7 +116,7 @@ export default function ProfilePage() {
                 type="text"
                 value={locality}
                 onChange={(e) => setLocality(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
               />
             </div>
 
@@ -127,7 +127,7 @@ export default function ProfilePage() {
               <select
                 value={elevationCategory}
                 onChange={(e) => setElevationCategory(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
               >
                 <option value="low">Low Country (&lt; 600m)</option>
                 <option value="mid">Mid Country (600m - 1200m)</option>
@@ -143,7 +143,7 @@ export default function ProfilePage() {
               <select
                 value={prefLang}
                 onChange={(e) => setPrefLang(e.target.value as any)}
-                className="w-full px-3.5 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm focus:ring-2 focus:ring-tea-600 focus:bg-white"
+                className="w-full px-3.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
               >
                 <option value="en">English (EN)</option>
                 <option value="si">සිංහල (Sinhala)</option>
@@ -151,15 +151,15 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-cream-200 flex justify-between items-center">
+          <div className="pt-4 border-t border-stone-100 flex justify-between items-center">
             <div className="flex items-center gap-2 text-xs text-stone-500">
-              <Shield className="w-4 h-4 text-tea-700" />
-              <span>Role: <strong className="text-tea-900 uppercase font-bold">{user?.role || 'Farmer'}</strong></span>
+              <Shield className="w-4 h-4 text-emerald-700" />
+              <span>Role: <strong className="text-emerald-900 uppercase font-bold">{user?.role || 'Farmer'}</strong></span>
             </div>
 
             <button
               type="submit"
-              className="px-6 py-2.5 bg-tea-800 hover:bg-tea-900 text-white font-bold text-xs rounded-xl shadow-sm transition-colors flex items-center gap-1.5"
+              className="px-6 py-2.5 glow-btn text-white font-bold text-xs rounded-xl shadow-glow transition-all flex items-center gap-1.5"
             >
               <Save className="w-4 h-4" />
               <span>{t.common.save}</span>

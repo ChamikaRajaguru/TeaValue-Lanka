@@ -4,56 +4,87 @@
 
 @layer base {
   :root {
-    --background: #fcfbf7;
-    --foreground: #1c1917;
-    --primary: #14442a;
-    --primary-foreground: #ffffff;
-    --secondary: #eee9db;
-    --secondary-foreground: #14442a;
-    --accent: #d97706;
-    --accent-foreground: #ffffff;
+    --background: #f8faf9;
+    --foreground: #0f2417;
     --card: #ffffff;
-    --card-foreground: #1c1917;
-    --border: #e2ddd3;
-    --muted: #f4f1ea;
-    --muted-foreground: #57534e;
+    --card-foreground: #0f2417;
+    --border: #e2ece6;
   }
 
   body {
     background-color: var(--background);
     color: var(--foreground);
-    font-family: var(--font-inter), var(--font-sinhala), 'Noto Sans Sinhala', 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-    line-height: 1.65;
+    font-family: var(--font-outfit), var(--font-inter), var(--font-sinhala), 'Noto Sans Sinhala', 'Segoe UI', sans-serif;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
-  /* Optimal Sinhala glyph rendering */
+  /* Optimal Sinhala & English Headings */
   h1, h2, h3, h4, h5, h6 {
-    line-height: 1.35;
-    letter-spacing: -0.015em;
-  }
-
-  p, span, label, input, select, textarea, button {
-    font-family: var(--font-sinhala), var(--font-inter), 'Noto Sans Sinhala', 'Inter', 'Segoe UI', sans-serif;
+    font-family: var(--font-outfit), var(--font-sinhala), sans-serif;
+    letter-spacing: -0.02em;
+    font-weight: 700;
   }
 }
 
-/* Custom agricultural styling and animations */
-.tea-gradient {
-  background: linear-gradient(135deg, #0c2d1c 0%, #14442a 50%, #1b5e3a 100%);
+/* Modern Green & White Glassmorphic Components */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16, 185, 129, 0.15);
+  box-shadow: 0 10px 30px -10px rgba(6, 78, 59, 0.08), 0 2px 8px -2px rgba(6, 78, 59, 0.04);
 }
 
-.tea-card-hover {
-  transition: all 0.2s ease-in-out;
+.glass-card {
+  background: #ffffff;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  box-shadow: 0 4px 20px -4px rgba(6, 78, 59, 0.05);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.tea-card-hover:hover {
+
+.glass-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px -5px rgba(20, 68, 42, 0.1), 0 8px 10px -6px rgba(20, 68, 42, 0.1);
+  border-color: rgba(16, 185, 129, 0.35);
+  box-shadow: 0 12px 30px -8px rgba(6, 78, 59, 0.12);
 }
 
-/* Accessible focus outline */
+.glow-btn {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 4px 18px -2px rgba(16, 185, 129, 0.35);
+  transition: all 0.2s ease;
+}
+
+.glow-btn:hover {
+  background: linear-gradient(135deg, #047857 0%, #059669 100%);
+  box-shadow: 0 6px 24px -1px rgba(16, 185, 129, 0.45);
+  transform: translateY(-1px);
+}
+
+/* Custom Fresh Green Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f6f3;
+}
+::-webkit-scrollbar-thumb {
+  background: #a7f3d0;
+  border-radius: 9999px;
+  border: 2px solid #f1f6f3;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #10b981;
+}
+
+/* Accessible focus ring with vibrant emerald */
 *:focus-visible {
-  outline: 2px solid #22c55e;
+  outline: 2px solid #10b981;
   outline-offset: 2px;
 }

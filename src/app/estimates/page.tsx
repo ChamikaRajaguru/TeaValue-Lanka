@@ -53,7 +53,7 @@ export default function EstimatesHistoryPage() {
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-tea-950">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-emerald-950">
             {t.nav.history}
           </h1>
           <p className="text-stone-600 text-sm">
@@ -62,9 +62,9 @@ export default function EstimatesHistoryPage() {
         </div>
         <Link
           href="/estimate"
-          className="inline-flex items-center gap-2 px-5 py-2.5 bg-tea-800 hover:bg-tea-900 text-white font-bold text-sm rounded-xl transition-colors shadow-sm"
+          className="inline-flex items-center gap-2 px-5 py-2.5 glow-btn text-white font-bold text-sm rounded-xl transition-all shadow-glow"
         >
-          <Calculator className="w-4 h-4 text-leaf-400" />
+          <Calculator className="w-4 h-4 text-white" />
           <span>{t.results.newEstimate}</span>
         </Link>
       </div>
@@ -76,19 +76,19 @@ export default function EstimatesHistoryPage() {
       )}
 
       {error && (
-        <div className="bg-amberGold-50 border border-amberGold-300 p-6 rounded-2xl text-center space-y-3">
-          <AlertCircle className="w-8 h-8 text-amberGold-600 mx-auto" />
+        <div className="bg-amber-50 border border-amber-200 p-6 rounded-2xl text-center space-y-3">
+          <AlertCircle className="w-8 h-8 text-amber-600 mx-auto" />
           <p className="text-stone-800 text-sm font-medium">{error}</p>
           <div className="flex justify-center gap-3">
             <Link
               href="/login"
-              className="px-4 py-2 bg-tea-800 text-white text-xs font-bold rounded-lg"
+              className="px-4 py-2 glow-btn text-xs font-bold rounded-lg"
             >
               Log In
             </Link>
             <Link
               href="/register"
-              className="px-4 py-2 bg-cream-200 text-tea-950 text-xs font-bold rounded-lg"
+              className="px-4 py-2 bg-emerald-50 text-emerald-900 border border-emerald-200 text-xs font-bold rounded-lg"
             >
               Register
             </Link>
@@ -97,7 +97,7 @@ export default function EstimatesHistoryPage() {
       )}
 
       {!loading && !error && estimates.length === 0 && (
-        <div className="bg-white rounded-2xl p-10 text-center border border-cream-200 space-y-4">
+        <div className="bg-white rounded-2xl p-10 text-center border border-emerald-100 shadow-sm space-y-4">
           <FileText className="w-12 h-12 text-stone-300 mx-auto" />
           <h3 className="text-base font-bold text-stone-700">No saved estimates yet</h3>
           <p className="text-xs text-stone-500 max-w-sm mx-auto">
@@ -105,7 +105,7 @@ export default function EstimatesHistoryPage() {
           </p>
           <Link
             href="/estimate"
-            className="inline-block px-5 py-2.5 bg-tea-800 text-white text-xs font-bold rounded-xl"
+            className="inline-block px-5 py-2.5 glow-btn text-xs font-bold rounded-xl"
           >
             Start Valuation
           </Link>
@@ -128,20 +128,20 @@ export default function EstimatesHistoryPage() {
             return (
               <div
                 key={est.id}
-                className="bg-white rounded-2xl p-5 border border-cream-200 shadow-sm hover:border-tea-300 transition-all flex flex-col md:flex-row justify-between md:items-center gap-4"
+                className="bg-white rounded-2xl p-5 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] hover:border-emerald-300 transition-all flex flex-col md:flex-row justify-between md:items-center gap-4"
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-tea-800 bg-tea-50 px-2 py-0.5 rounded border border-tea-200">
+                    <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                       {inp.district} {inp.locality ? `• ${inp.locality}` : ''}
                     </span>
                     <span className="text-[11px] text-stone-400 flex items-center gap-1">
-                      <Calendar className="w-3 h-3" /> {dateStr}
+                      <Calendar className="w-3 h-3 text-emerald-600" /> {dateStr}
                     </span>
                   </div>
 
                   <div className="flex items-baseline gap-3">
-                    <span className="text-xl font-extrabold text-tea-950">
+                    <span className="text-xl font-extrabold text-emerald-950">
                       Rs. {res.estimatedPriceMin} – {res.estimatedPriceMax} / kg
                     </span>
                     <span className="text-xs text-stone-500">
@@ -150,17 +150,17 @@ export default function EstimatesHistoryPage() {
                   </div>
 
                   <div className="text-xs text-stone-600">
-                    Net Payout: <strong className="text-tea-900">Rs. {res.netRevenueMin.toLocaleString()} – {res.netRevenueMax.toLocaleString()}</strong>
+                    Net Payout: <strong className="text-emerald-800">Rs. {res.netRevenueMin.toLocaleString()} – {res.netRevenueMax.toLocaleString()}</strong>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-2 self-end md:self-center">
                   <Link
                     href={`/estimates/${est.id}`}
-                    className="px-3.5 py-2 text-xs font-semibold text-tea-900 bg-cream-100 hover:bg-cream-200 rounded-lg flex items-center gap-1.5 transition-colors"
+                    className="px-3.5 py-2 text-xs font-semibold text-emerald-900 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg flex items-center gap-1.5 transition-colors"
                   >
                     <span>View Snapshot</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-3.5 h-3.5 text-emerald-700" />
                   </Link>
                   <button
                     onClick={() => handleDelete(est.id)}

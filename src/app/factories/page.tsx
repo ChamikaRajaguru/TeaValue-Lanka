@@ -44,11 +44,11 @@ export default function FactoriesPage() {
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
       {/* Title */}
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-tea-700 font-semibold text-xs tracking-wider uppercase">
-          <Building2 className="w-4 h-4 text-leaf-500" />
+        <div className="flex items-center gap-2 text-emerald-800 font-semibold text-xs tracking-wider uppercase">
+          <Building2 className="w-4 h-4 text-emerald-600" />
           <span>Regional Factory Directory</span>
         </div>
-        <h1 className="text-2xl sm:text-4xl font-extrabold text-tea-950">
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-emerald-950">
           {t.factoriesPage.title}
         </h1>
         <p className="text-stone-600 text-sm sm:text-base max-w-2xl leading-relaxed">
@@ -57,7 +57,7 @@ export default function FactoriesPage() {
       </div>
 
       {/* Filter and Quantity Bar */}
-      <div className="bg-white rounded-2xl p-6 border border-cream-200 shadow-sm flex flex-col md:flex-row gap-6 items-center justify-between">
+      <div className="bg-white rounded-2xl p-6 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] flex flex-col md:flex-row gap-6 items-center justify-between">
         <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
           <div>
             <label className="block text-xs font-semibold text-stone-700 mb-1">
@@ -66,7 +66,7 @@ export default function FactoriesPage() {
             <select
               value={district}
               onChange={(e) => setDistrict(e.target.value)}
-              className="px-4 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm font-medium focus:ring-2 focus:ring-tea-600 focus:bg-white"
+              className="px-4 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm font-medium focus:ring-2 focus:ring-emerald-600 focus:bg-white"
             >
               <option value="Galle">Galle (ගාල්ල)</option>
               <option value="Matara">Matara (මාතර)</option>
@@ -87,12 +87,12 @@ export default function FactoriesPage() {
               step="10"
               value={weightKg}
               onChange={(e) => setWeightKg(Number(e.target.value) || 100)}
-              className="px-4 py-2.5 rounded-xl border border-cream-300 bg-cream-50/50 text-sm font-medium w-40 focus:ring-2 focus:ring-tea-600 focus:bg-white"
+              className="px-4 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm font-medium w-40 focus:ring-2 focus:ring-emerald-600 focus:bg-white"
             />
           </div>
         </div>
 
-        <div className="text-xs text-stone-500 bg-cream-100 p-3 rounded-xl border border-cream-200 max-w-sm">
+        <div className="text-xs text-emerald-900 bg-emerald-50 p-3 rounded-xl border border-emerald-200 max-w-sm">
           <strong>Ranking Standard:</strong> {t.factoriesPage.rankByRevenue} Overlapping ranges indicate price variance based on tender leaf grade.
         </div>
       </div>
@@ -100,7 +100,7 @@ export default function FactoriesPage() {
       {loading ? (
         <div className="text-center py-20 text-stone-500 text-sm">{t.common.loading}</div>
       ) : factories.length === 0 ? (
-        <div className="bg-white rounded-2xl p-10 text-center border border-cream-200 text-stone-500 text-sm">
+        <div className="bg-white rounded-2xl p-10 text-center border border-emerald-100 text-stone-500 text-sm">
           {t.factoriesPage.noEligible}
         </div>
       ) : (
@@ -108,29 +108,29 @@ export default function FactoriesPage() {
           {factories.map((fac, idx) => (
             <div
               key={fac.factoryId}
-              className={`bg-white rounded-2xl p-6 border shadow-sm transition-all flex flex-col justify-between space-y-4 ${
+              className={`bg-white rounded-2xl p-6 border shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)] transition-all flex flex-col justify-between space-y-4 hover:shadow-md ${
                 fac.hasEligiblePrice
-                  ? 'border-cream-300 hover:border-tea-400'
+                  ? 'border-emerald-200 hover:border-emerald-400'
                   : 'border-dashed border-stone-200 opacity-75'
               }`}
             >
               <div className="space-y-3">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <span className="text-[11px] font-bold text-tea-700 bg-tea-50 px-2 py-0.5 rounded border border-tea-200">
+                    <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
                       Rank #{idx + 1} in {fac.district}
                     </span>
-                    <h3 className="text-lg font-bold text-tea-950 mt-1">
+                    <h3 className="text-lg font-bold text-emerald-950 mt-1">
                       {fac.factoryName}
                     </h3>
                     <div className="text-xs text-stone-500 flex items-center gap-1 mt-0.5">
-                      <MapPin className="w-3.5 h-3.5" />
+                      <MapPin className="w-3.5 h-3.5 text-emerald-600" />
                       <span>{fac.locality}, {fac.district}</span>
                     </div>
                   </div>
 
                   {fac.hasEligiblePrice ? (
-                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-leaf-100 text-leaf-800 border border-leaf-300 shrink-0">
+                    <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-200 shrink-0">
                       Active Price
                     </span>
                   ) : (
@@ -141,17 +141,17 @@ export default function FactoriesPage() {
                 </div>
 
                 {fac.hasEligiblePrice ? (
-                  <div className="bg-tea-50/60 rounded-xl p-4 border border-tea-100 space-y-2">
+                  <div className="bg-emerald-50/70 rounded-xl p-4 border border-emerald-100 space-y-2">
                     <div className="flex justify-between items-baseline">
                       <span className="text-xs text-stone-600">Base Price Range:</span>
-                      <strong className="text-lg font-extrabold text-tea-950">
+                      <strong className="text-lg font-extrabold text-emerald-950">
                         Rs. {fac.priceMin} – {fac.priceMax} / kg
                       </strong>
                     </div>
 
-                    <div className="flex justify-between items-baseline pt-1 border-t border-tea-100 text-xs">
+                    <div className="flex justify-between items-baseline pt-1 border-t border-emerald-100 text-xs">
                       <span className="text-stone-600">Net Revenue for {weightKg} kg:</span>
-                      <strong className="text-tea-900 font-bold">
+                      <strong className="text-emerald-800 font-bold">
                         Rs. {fac.netRevenueMin?.toLocaleString()} – {fac.netRevenueMax?.toLocaleString()}
                       </strong>
                     </div>
@@ -184,10 +184,10 @@ export default function FactoriesPage() {
                 )}
               </div>
 
-              <div className="pt-2 border-t border-cream-200">
+              <div className="pt-2 border-t border-stone-100">
                 <Link
                   href={`/estimate?targetFactory=${fac.factoryId}&district=${fac.district}`}
-                  className="w-full py-2.5 bg-tea-800 hover:bg-tea-900 text-white font-semibold text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors"
+                  className="w-full py-2.5 glow-btn text-xs rounded-xl flex items-center justify-center gap-1.5 transition-colors font-bold shadow-sm"
                 >
                   <span>Select for My Assessment</span>
                   <ArrowRight className="w-3.5 h-3.5" />

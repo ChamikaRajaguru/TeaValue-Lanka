@@ -14,7 +14,9 @@ import {
   ChevronDown,
   LayoutDashboard,
   FileText,
-  Settings,
+  Activity,
+  Calculator,
+  Building2,
 } from 'lucide-react';
 import { UserRecord } from '@/lib/db/client';
 
@@ -28,17 +30,12 @@ export const Navbar: React.FC = () => {
   const [user, setUser] = useState<UserRecord | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Sync auth state from localStorage and /api/auth/me
   const syncAuth = () => {
-    // Immediate fallback from localStorage
     try {
       const cached = localStorage.getItem('teavalue_user');
-      if (cached) {
-        setUser(JSON.parse(cached));
-      }
+      if (cached) setUser(JSON.parse(cached));
     } catch (e) {}
 
-    // Authoritative check from server
     fetch('/api/auth/me', { cache: 'no-store' })
       .then((res) => res.json())
       .then((data) => {
@@ -60,12 +57,10 @@ export const Navbar: React.FC = () => {
   useEffect(() => {
     syncAuth();
 
-    // Listen for custom auth events
     const handleAuthChange = () => syncAuth();
     window.addEventListener('auth-change', handleAuthChange);
     window.addEventListener('storage', handleAuthChange);
 
-    // Click outside to close dropdown
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setUserDropdownOpen(false);
@@ -105,47 +100,47 @@ export const Navbar: React.FC = () => {
     ...(user?.role === 'admin' ? [{ href: '/admin', label: t.nav.admin, isAdmin: true }] : []),
   ];
 
-  // User initials for avatar
   const getInitials = (name?: string) => {
     if (!name) return 'U';
     const parts = name.trim().split(' ');
-    if (parts.length >= 2) {
-      return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-    }
+    if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
     return name.slice(0, 2).toUpperCase();
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-cream-200">
+    <header className="sticky top-0 z-40 w-full border-b border-emerald-100/90 bg-white/90 backdrop-blur-xl shadow-[0_2px_15px_-3px_rgba(6,78,59,0.05)]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-xl bg-tea-800 text-tea-100 flex items-center justify-center shadow-md group-hover:bg-tea-900 transition-colors">
-              <Sprout className="w-6 h-6 text-leaf-400" />
+        <div className="flex justify-between items-center h-20">
+          {/* Futuristic Glowing Brand Logo */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative">
+              <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 border border-emerald-400/40 flex items-center justify-center shadow-md shadow-emerald-700/20 group-hover:scale-105 group-hover:shadow-emerald-600/30 transition-all">
+                <Sprout className="w-6 h-6 text-white group-hover:rotate-6 transition-transform" />
+              </div>
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-emerald-500 ring-2 ring-white animate-pulse" />
             </div>
             <div>
-              <span className="text-xl font-bold tracking-tight text-tea-950 block leading-tight">
-                {t.appName}
+              <span className="text-xl font-extrabold tracking-tight text-emerald-950 block leading-tight font-sans">
+                TeaValue <span className="text-emerald-600">Lanka</span>
               </span>
-              <span className="text-[10px] uppercase tracking-wider text-tea-700 font-bold block">
-                Green Leaf Valuation
+              <span className="text-[10px] uppercase tracking-widest text-emerald-700 font-bold block">
+                Agri-Intelligence • අමු දළු
               </span>
             </div>
           </Link>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-emerald-50/70 border border-emerald-100">
             {navLinks.map((link) => {
               const isActive = pathname === link.href;
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 ${
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold tracking-wide transition-all flex items-center gap-1.5 ${
                     isActive
-                      ? 'bg-tea-50 text-tea-900 font-semibold border border-tea-200'
-                      : 'text-stone-600 hover:text-tea-900 hover:bg-cream-100'
+                      ? 'bg-white text-emerald-800 font-bold shadow-sm border border-emerald-200/70'
+                      : 'text-stone-600 hover:text-emerald-900 hover:bg-white/60'
                   }`}
                 >
                   {link.isAdmin && <Shield className="w-3.5 h-3.5 text-amber-600" />}
@@ -155,31 +150,29 @@ export const Navbar: React.FC = () => {
             })}
           </nav>
 
-          {/* Right Controls */}
+          {/* Controls: Language & Profile Avatar */}
           <div className="hidden md:flex items-center gap-3">
             {/* Language Switcher */}
-            <div className="flex items-center bg-cream-100 rounded-lg p-0.5 border border-cream-300">
+            <div className="flex items-center bg-emerald-50/80 rounded-xl p-1 border border-emerald-200/80">
               <button
                 type="button"
                 onClick={() => setLanguage('en')}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+                className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
                   language === 'en'
-                    ? 'bg-tea-800 text-white shadow-sm'
-                    : 'text-stone-600 hover:text-stone-900'
+                    ? 'bg-emerald-700 text-white shadow-sm'
+                    : 'text-stone-600 hover:text-emerald-900'
                 }`}
-                title="Switch to English"
               >
                 EN
               </button>
               <button
                 type="button"
                 onClick={() => setLanguage('si')}
-                className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all ${
+                className={`px-3 py-1 text-xs font-bold rounded-lg transition-all ${
                   language === 'si'
-                    ? 'bg-tea-800 text-white shadow-sm'
-                    : 'text-stone-600 hover:text-stone-900'
+                    ? 'bg-emerald-700 text-white shadow-sm'
+                    : 'text-stone-600 hover:text-emerald-900'
                 }`}
-                title="සිංහල භාෂාවට මාරු වන්න"
               >
                 සිං
               </button>
@@ -187,88 +180,87 @@ export const Navbar: React.FC = () => {
 
             {/* User Profile Avatar / Dropdown OR Login/Register */}
             {user ? (
-              <div className="relative pl-2 border-l border-cream-200" ref={dropdownRef}>
+              <div className="relative pl-2 border-l border-emerald-100" ref={dropdownRef}>
                 <button
                   type="button"
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-2 py-1.5 px-2.5 rounded-full bg-cream-100 hover:bg-cream-200 border border-cream-300 transition-colors focus:ring-2 focus:ring-tea-600"
+                  className="flex items-center gap-2.5 py-1.5 px-3 rounded-full bg-white border border-emerald-200 hover:border-emerald-400 hover:shadow-sm transition-all"
                 >
-                  {/* Avatar circle */}
-                  <div className="w-8 h-8 rounded-full bg-tea-800 text-leaf-300 font-bold text-xs flex items-center justify-center shadow-inner">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-emerald-700 to-teal-600 text-white font-extrabold text-xs flex items-center justify-center shadow-sm">
                     {getInitials(user.name)}
                   </div>
 
                   <div className="text-left hidden lg:block">
-                    <span className="text-xs font-bold text-tea-950 block leading-tight max-w-[110px] truncate">
+                    <span className="text-xs font-bold text-stone-900 block leading-tight max-w-[120px] truncate">
                       {user.name}
                     </span>
-                    <span className="text-[10px] uppercase font-semibold text-tea-700 block leading-none">
-                      {user.role === 'admin' ? 'Administrator' : 'Farmer'}
+                    <span className="text-[10px] uppercase font-semibold text-emerald-600 block leading-none">
+                      {user.role === 'admin' ? 'Admin' : 'Farmer'}
                     </span>
                   </div>
 
                   <ChevronDown className={`w-3.5 h-3.5 text-stone-500 transition-transform ${userDropdownOpen ? 'rotate-180' : ''}`} />
                 </button>
 
-                {/* Dropdown Menu */}
+                {/* Glassmorphic Profile Dropdown Menu */}
                 {userDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-2xl shadow-xl border border-cream-200 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                    <div className="px-4 py-3 border-b border-cream-200 bg-cream-50/50">
-                      <div className="font-bold text-sm text-tea-950 truncate">{user.name}</div>
+                  <div className="absolute right-0 mt-3 w-64 bg-white/95 backdrop-blur-md rounded-2xl py-2 z-50 border border-emerald-100 shadow-xl animate-in fade-in slide-in-from-top-2 duration-150">
+                    <div className="px-4 py-3 border-b border-emerald-100 bg-emerald-50/50">
+                      <div className="font-bold text-sm text-stone-900 truncate">{user.name}</div>
                       <div className="text-xs text-stone-500 truncate">{user.email}</div>
-                      <div className="mt-1 flex items-center gap-1.5">
-                        <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-tea-100 text-tea-800">
+                      <div className="mt-2 flex items-center gap-2">
+                        <span className="text-[10px] uppercase font-extrabold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200">
                           {user.role}
                         </span>
                         <span className="text-[11px] text-stone-500">{user.district || 'Galle'}</span>
                       </div>
                     </div>
 
-                    <div className="py-1">
-                      <Link
-                        href="/profile"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-stone-700 hover:bg-cream-100 hover:text-tea-900 transition-colors"
-                      >
-                        <User className="w-4 h-4 text-tea-700" />
-                        <span>Estate Profile</span>
-                      </Link>
-
+                    <div className="py-1.5 space-y-0.5">
                       <Link
                         href="/dashboard"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-stone-700 hover:bg-cream-100 hover:text-tea-900 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
                       >
-                        <LayoutDashboard className="w-4 h-4 text-tea-700" />
-                        <span>My Dashboard</span>
+                        <LayoutDashboard className="w-4 h-4 text-emerald-600" />
+                        <span>Command Dashboard</span>
+                      </Link>
+
+                      <Link
+                        href="/profile"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
+                      >
+                        <User className="w-4 h-4 text-emerald-600" />
+                        <span>Estate Parameters</span>
                       </Link>
 
                       <Link
                         href="/estimates"
                         onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-stone-700 hover:bg-cream-100 hover:text-tea-900 transition-colors"
+                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
                       >
-                        <FileText className="w-4 h-4 text-tea-700" />
-                        <span>Saved Estimates</span>
+                        <FileText className="w-4 h-4 text-emerald-600" />
+                        <span>Historical Telemetry</span>
                       </Link>
 
                       {user.role === 'admin' && (
                         <Link
                           href="/admin"
                           onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-amber-800 bg-amber-50/50 hover:bg-amber-100/70 transition-colors"
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-amber-700 hover:bg-amber-50 transition-colors"
                         >
-                          <Shield className="w-4 h-4 text-amber-700" />
-                          <span>Admin Control Portal</span>
+                          <Shield className="w-4 h-4 text-amber-600" />
+                          <span>Admin Control Deck</span>
                         </Link>
                       )}
                     </div>
 
-                    <div className="border-t border-cream-200 pt-1">
+                    <div className="border-t border-emerald-100 pt-1.5">
                       <button
                         type="button"
                         onClick={handleLogout}
-                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition-colors text-left"
+                        className="w-full flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors text-left"
                       >
                         <LogOut className="w-4 h-4" />
                         <span>{t.nav.logout}</span>
@@ -281,13 +273,13 @@ export const Navbar: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Link
                   href="/login"
-                  className="px-3 py-1.5 text-xs font-medium text-tea-900 hover:bg-cream-100 rounded-lg transition-colors"
+                  className="px-4 py-2 text-xs font-semibold text-stone-700 hover:text-emerald-900 hover:bg-emerald-50 rounded-xl transition-colors"
                 >
                   {t.nav.login}
                 </Link>
                 <Link
                   href="/register"
-                  className="px-3.5 py-1.5 text-xs font-semibold text-white bg-tea-800 hover:bg-tea-900 rounded-lg shadow-sm transition-colors"
+                  className="px-4 py-2 text-xs font-bold glow-btn rounded-xl transition-all"
                 >
                   {t.nav.register}
                 </Link>
@@ -299,13 +291,13 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center gap-2 md:hidden">
             <button
               onClick={() => setLanguage(language === 'en' ? 'si' : 'en')}
-              className="px-2 py-1 bg-cream-100 border border-cream-300 text-xs font-bold rounded text-tea-900"
+              className="px-2.5 py-1 bg-emerald-50 border border-emerald-200 text-xs font-bold rounded-lg text-emerald-800"
             >
               {language === 'en' ? 'සිං' : 'EN'}
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-stone-600 hover:text-tea-900 hover:bg-cream-100 rounded-lg"
+              className="p-2 text-stone-600 hover:text-emerald-800 rounded-lg"
               aria-label="Toggle navigation"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -314,35 +306,35 @@ export const Navbar: React.FC = () => {
         </div>
       </div>
 
-      {/* Mobile drawer */}
+      {/* Mobile Drawer */}
       {isOpen && (
-        <div className="md:hidden border-t border-cream-200 bg-white px-4 pt-3 pb-6 space-y-3">
-          <nav className="flex flex-col space-y-1">
+        <div className="md:hidden border-t border-emerald-100 bg-white/95 backdrop-blur-2xl px-4 pt-4 pb-8 space-y-4 shadow-xl">
+          <nav className="flex flex-col space-y-1.5">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`px-3 py-2.5 rounded-lg text-sm font-medium ${
+                className={`px-4 py-2.5 rounded-xl text-sm font-semibold ${
                   pathname === link.href
-                    ? 'bg-tea-50 text-tea-900 font-semibold'
-                    : 'text-stone-700 hover:bg-cream-100'
+                    ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200'
+                    : 'text-stone-700 hover:bg-emerald-50/50'
                 }`}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
-          <div className="pt-3 border-t border-cream-200">
+          <div className="pt-3 border-t border-emerald-100">
             {user ? (
               <div className="space-y-3">
-                <div className="flex items-center gap-3 p-3 bg-cream-50 rounded-xl border border-cream-200">
-                  <div className="w-9 h-9 rounded-full bg-tea-800 text-leaf-300 font-bold text-xs flex items-center justify-center">
+                <div className="flex items-center gap-3 p-3 bg-emerald-50/70 rounded-xl border border-emerald-200">
+                  <div className="w-9 h-9 rounded-full bg-emerald-700 text-white font-extrabold text-xs flex items-center justify-center">
                     {getInitials(user.name)}
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-tea-950">{user.name}</div>
-                    <div className="text-xs text-stone-500 capitalize">{user.role} • {user.district || 'Galle'}</div>
+                    <div className="text-sm font-bold text-stone-900">{user.name}</div>
+                    <div className="text-xs text-emerald-700 capitalize">{user.role} • {user.district || 'Galle'}</div>
                   </div>
                 </div>
 
@@ -350,7 +342,7 @@ export const Navbar: React.FC = () => {
                   <Link
                     href="/profile"
                     onClick={() => setIsOpen(false)}
-                    className="flex-1 text-center py-2 text-xs font-semibold text-tea-900 bg-cream-100 rounded-lg"
+                    className="flex-1 text-center py-2 text-xs font-bold text-stone-800 bg-emerald-50 rounded-xl border border-emerald-200"
                   >
                     Profile
                   </Link>
@@ -359,7 +351,7 @@ export const Navbar: React.FC = () => {
                       setIsOpen(false);
                       handleLogout();
                     }}
-                    className="flex-1 text-center py-2 text-xs font-semibold text-red-600 bg-red-50 rounded-lg"
+                    className="flex-1 text-center py-2 text-xs font-bold text-red-600 bg-red-50 border border-red-200 rounded-xl"
                   >
                     {t.nav.logout}
                   </button>
@@ -370,14 +362,14 @@ export const Navbar: React.FC = () => {
                 <Link
                   href="/login"
                   onClick={() => setIsOpen(false)}
-                  className="flex-1 text-center py-2 text-sm font-medium text-tea-900 bg-cream-100 rounded-lg"
+                  className="flex-1 text-center py-2.5 text-sm font-semibold text-stone-700 bg-emerald-50 rounded-xl border border-emerald-100"
                 >
                   {t.nav.login}
                 </Link>
                 <Link
                   href="/register"
                   onClick={() => setIsOpen(false)}
-                  className="flex-1 text-center py-2 text-sm font-semibold text-white bg-tea-800 rounded-lg"
+                  className="flex-1 text-center py-2.5 text-sm font-bold glow-btn rounded-xl"
                 >
                   {t.nav.register}
                 </Link>
