@@ -87,18 +87,20 @@ export const Navbar: React.FC = () => {
     router.refresh();
   };
 
-  const navLinks = [
-    { href: '/', label: t.nav.home },
-    { href: '/estimate', label: t.nav.estimate },
-    { href: '/factories', label: t.nav.factories },
-    ...(user
-      ? [
-          { href: '/dashboard', label: t.nav.dashboard },
-          { href: '/estimates', label: t.nav.history },
-        ]
-      : []),
-    ...(user?.role === 'admin' ? [{ href: '/admin', label: t.nav.admin, isAdmin: true }] : []),
-  ];
+  const navLinks =
+    user?.role === 'admin'
+      ? [{ href: '/admin', label: t.nav.admin, isAdmin: true }]
+      : [
+          { href: '/', label: t.nav.home },
+          { href: '/estimate', label: t.nav.estimate },
+          { href: '/factories', label: t.nav.factories },
+          ...(user
+            ? [
+                { href: '/dashboard', label: t.nav.dashboard },
+                { href: '/estimates', label: t.nav.history },
+              ]
+            : []),
+        ];
 
   const getInitials = (name?: string) => {
     if (!name) return 'U';
@@ -112,7 +114,7 @@ export const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Futuristic Glowing Brand Logo */}
-          <Link href="/" className="flex items-center gap-3 group">
+          <Link href={user?.role === 'admin' ? '/admin' : '/'} className="flex items-center gap-3 group">
             <div className="relative">
               <div className="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 border border-emerald-400/40 flex items-center justify-center shadow-md shadow-emerald-700/20 group-hover:scale-105 group-hover:shadow-emerald-600/30 transition-all">
                 <Sprout className="w-6 h-6 text-white group-hover:rotate-6 transition-transform" />
@@ -132,7 +134,7 @@ export const Navbar: React.FC = () => {
           {/* Desktop Navigation Links */}
           <nav className="hidden md:flex items-center gap-1.5 p-1 rounded-2xl bg-emerald-50/70 border border-emerald-100">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive = link.isAdmin ? pathname.startsWith('/admin') : pathname === link.href;
               return (
                 <Link
                   key={link.href}
@@ -217,42 +219,73 @@ export const Navbar: React.FC = () => {
                     </div>
 
                     <div className="py-1.5 space-y-0.5">
-                      <Link
-                        href="/dashboard"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
-                      >
-                        <LayoutDashboard className="w-4 h-4 text-emerald-600" />
-                        <span>Command Dashboard</span>
-                      </Link>
+                      {user.role === 'admin' ? (
+                        <>
+                          <Link
+                            href="/admin"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-amber-700 hover:bg-amber-50 transition-colors"
+                          >
+                            <Shield className="w-4 h-4 text-amber-600" />
+                            <span>Admin Portal Deck</span>
+                          </Link>
 
-                      <Link
-                        href="/profile"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
-                      >
-                        <User className="w-4 h-4 text-emerald-600" />
-                        <span>Estate Parameters</span>
-                      </Link>
+                          <Link
+                            href="/admin/prices"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
+                          >
+                            <Activity className="w-4 h-4 text-emerald-600" />
+                            <span>Market Price Telemetry</span>
+                          </Link>
 
-                      <Link
-                        href="/estimates"
-                        onClick={() => setUserDropdownOpen(false)}
-                        className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
-                      >
-                        <FileText className="w-4 h-4 text-emerald-600" />
-                        <span>Historical Telemetry</span>
-                      </Link>
+                          <Link
+                            href="/admin/factories"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
+                          >
+                            <Building2 className="w-4 h-4 text-emerald-600" />
+                            <span>Factory Network</span>
+                          </Link>
 
-                      {user.role === 'admin' && (
-                        <Link
-                          href="/admin"
-                          onClick={() => setUserDropdownOpen(false)}
-                          className="flex items-center gap-2.5 px-4 py-2 text-xs font-bold text-amber-700 hover:bg-amber-50 transition-colors"
-                        >
-                          <Shield className="w-4 h-4 text-amber-600" />
-                          <span>Admin Control Deck</span>
-                        </Link>
+                          <Link
+                            href="/admin/users"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
+                          >
+                            <User className="w-4 h-4 text-emerald-600" />
+                            <span>User Management</span>
+                          </Link>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            href="/dashboard"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
+                          >
+                            <LayoutDashboard className="w-4 h-4 text-emerald-600" />
+                            <span>Command Dashboard</span>
+                          </Link>
+
+                          <Link
+                            href="/profile"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
+                          >
+                            <User className="w-4 h-4 text-emerald-600" />
+                            <span>Estate Parameters</span>
+                          </Link>
+
+                          <Link
+                            href="/estimates"
+                            onClick={() => setUserDropdownOpen(false)}
+                            className="flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-emerald-50 hover:text-emerald-900 transition-colors"
+                          >
+                            <FileText className="w-4 h-4 text-emerald-600" />
+                            <span>Historical Telemetry</span>
+                          </Link>
+                        </>
                       )}
                     </div>
 

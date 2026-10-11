@@ -158,6 +158,15 @@ export interface CalculationResult {
   };
   calculatedAt: string;
   calculationVersion: string;
+  valuationEngine?: 'gemini_ai' | 'deterministic';
+  geminiAnalysis?: {
+    summaryEn: string;
+    summarySi: string;
+    qualityAdviceEn: string;
+    qualityAdviceSi: string;
+    benchmarkSource?: string;
+    confidenceScore?: 'high' | 'medium' | 'low' | string;
+  };
 }
 
 export interface FactoryProfile {

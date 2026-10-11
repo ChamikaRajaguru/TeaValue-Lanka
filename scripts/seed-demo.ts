@@ -61,6 +61,39 @@ async function seedDemoData() {
     // Seed Initial Users for MongoDB Atlas
     console.log('Seeding initial Demo Admin and Farmer accounts...');
     const { hashPassword } = await import('../src/lib/auth/index');
+
+    await db.collection('users').updateOne(
+      { email: 'superadmin@gmail.com' },
+      {
+        $set: {
+          id: 'usr-superadmin-1',
+          name: 'Super Admin',
+          email: 'superadmin@gmail.com',
+          role: 'admin',
+          district: 'Galle',
+          locality: 'Neluwa',
+          elevationCategory: 'low',
+          preferredLanguage: 'en',
+          createdAt: new Date().toISOString(),
+          status: 'active',
+        },
+      },
+      { upsert: true }
+    );
+
+    await db.collection('accounts').updateOne(
+      { email: 'superadmin@gmail.com' },
+      {
+        $set: {
+          userId: 'usr-superadmin-1',
+          email: 'superadmin@gmail.com',
+          passwordHash: hashPassword('admin123'),
+          createdAt: new Date().toISOString(),
+        },
+      },
+      { upsert: true }
+    );
+
     await db.collection('users').updateOne(
       { email: 'admin@teavalue.lk' },
       {
@@ -96,7 +129,7 @@ async function seedDemoData() {
     await db.collection('users').updateOne(
       { email: 'farmer@teavalue.lk' },
       {
-        $setOnInsert: {
+        $set: {
           id: 'usr-farmer-1',
           name: 'Sunil Rajapaksa',
           email: 'farmer@teavalue.lk',
@@ -105,8 +138,10 @@ async function seedDemoData() {
           locality: 'Neluwa',
           elevationCategory: 'low',
           preferredLanguage: 'si',
-          createdAt: new Date().toISOString(),
           status: 'active',
+        },
+        $setOnInsert: {
+          createdAt: new Date().toISOString(),
         },
       },
       { upsert: true }

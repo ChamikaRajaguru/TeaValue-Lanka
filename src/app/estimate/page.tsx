@@ -20,6 +20,13 @@ import {
   Zap,
   Activity,
   ShieldCheck,
+  Sparkles,
+  ChevronDown,
+  ChevronUp,
+  Sun,
+  CloudRain,
+  Star,
+  Check,
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -34,6 +41,10 @@ export default function EstimatePage() {
   const [targetFactoryId, setTargetFactoryId] = useState('');
   const [factories, setFactories] = useState<any[]>([]);
 
+  // Simple Mode Helpers
+  const [qualityPreset, setQualityPreset] = useState<'super' | 'standard' | 'coarse'>('super');
+  const [showAdvanced, setShowAdvanced] = useState(false);
+
   // Quantity
   const [harvestedWeightKg, setHarvestedWeightKg] = useState<number>(100);
   const [expectedAcceptedWeightKg, setExpectedAcceptedWeightKg] = useState<string>('');
@@ -47,9 +58,9 @@ export default function EstimatePage() {
   const [deliveryTimestamp, setDeliveryTimestamp] = useState(fourHoursLaterStr);
 
   // Quality
-  const [goodLeafPercentage, setGoodLeafPercentage] = useState<string>('72');
-  const [coarseLeafPercentage, setCoarseLeafPercentage] = useState<string>('15');
-  const [damagedLeafPercentage, setDamagedLeafPercentage] = useState<string>('5');
+  const [goodLeafPercentage, setGoodLeafPercentage] = useState<string>('75');
+  const [coarseLeafPercentage, setCoarseLeafPercentage] = useState<string>('10');
+  const [damagedLeafPercentage, setDamagedLeafPercentage] = useState<string>('3');
   const [surfaceCondition, setSurfaceCondition] = useState<'dry' | 'wet' | 'unknown'>('dry');
   const [packagingCondition, setPackagingCondition] = useState<'loosely_packed' | 'tightly_compressed' | 'unknown'>('loosely_packed');
   const [isMeasuredSample, setIsMeasuredSample] = useState(false);
@@ -67,6 +78,49 @@ export default function EstimatePage() {
   const [result, setResult] = useState<CalculationResult | null>(null);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [useGemini, setUseGemini] = useState(true);
+  const [geminiNotice, setGeminiNotice] = useState<string | null>(null);
+
+  const handleSelectQualityPreset = (preset: 'super' | 'standard' | 'coarse') => {
+    setQualityPreset(preset);
+    if (preset === 'super') {
+      setGoodLeafPercentage('75');
+      setCoarseLeafPercentage('10');
+      setDamagedLeafPercentage('3');
+    } else if (preset === 'standard') {
+      setGoodLeafPercentage('65');
+      setCoarseLeafPercentage('15');
+      setDamagedLeafPercentage('5');
+    } else {
+      setGoodLeafPercentage('48');
+      setCoarseLeafPercentage('25');
+      setDamagedLeafPercentage('10');
+    }
+  };
+
+  const handleDistrictChange = (d: string) => {
+    setDistrict(d);
+    if (['Galle', 'Matara', 'Kalutara'].includes(d)) {
+      setGrowingRegion('Ruhuna (Low Country)');
+      setElevationCategory('low');
+    } else if (['Ratnapura', 'Kegalle'].includes(d)) {
+      setGrowingRegion('Sabaragamuwa');
+      setElevationCategory('low');
+    } else if (d === 'Kandy') {
+      setGrowingRegion('Kandy (Mid Country)');
+      setElevationCategory('mid');
+    } else if (d === 'Nuwara Eliya') {
+      setGrowingRegion('Nuwara Eliya (Up Country)');
+      setElevationCategory('high');
+    } else if (d === 'Badulla') {
+      setGrowingRegion('Uva (High / Mid Country)');
+      setElevationCategory('high');
+    }
+  };
+
+  const quickAddWeight = (amount: number) => {
+    setHarvestedWeightKg((prev) => Math.max(1, (Number(prev) || 0) + amount));
+  };
 
   useEffect(() => {
     fetch(`/api/factories?district=${district}`)
@@ -83,6 +137,7 @@ export default function EstimatePage() {
     e.preventDefault();
     setIsLoading(true);
     setError(null);
+    setGeminiNotice(null);
     setSavedSuccess(false);
 
     try {
@@ -109,6 +164,7 @@ export default function EstimatePage() {
           isTransportCostConfirmed,
           notes: notes || undefined,
         },
+        useGemini,
         save: false,
       };
 
@@ -124,6 +180,9 @@ export default function EstimatePage() {
       }
 
       setResult(data.result);
+      if (data.geminiNotice) {
+        setGeminiNotice(data.geminiNotice);
+      }
       setTimeout(() => {
         const resultsEl = document.getElementById('results-section');
         if (resultsEl) {
@@ -165,6 +224,7 @@ export default function EstimatePage() {
           isTransportCostConfirmed,
           notes: notes || undefined,
         },
+        useGemini,
         save: true,
       };
 
@@ -217,29 +277,28 @@ export default function EstimatePage() {
 
       {/* Main Assessment Form */}
       <form onSubmit={handleCalculate} className="space-y-6">
-        {/* Step 1: Location & Destination */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 space-y-6 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)]">
-          <div className="flex items-center gap-3 border-b border-stone-100 pb-4">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center font-bold text-sm">
-              01
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-emerald-950 uppercase tracking-wide">
-                {t.assessment.steps.location}
-              </h2>
-              <span className="text-xs text-stone-500">Target district & processing factory</span>
-            </div>
+        {/* Quick & User-Friendly Assessment Section */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 space-y-6 border border-emerald-100 shadow-[0_4px_25px_-4px_rgba(6,78,59,0.06)]">
+          <div className="border-b border-stone-100 pb-4">
+            <h2 className="text-lg font-bold text-emerald-950 flex items-center gap-2">
+              <Sprout className="w-5 h-5 text-emerald-600" />
+              <span>{t.assessment.fields.easyModeTitle}</span>
+            </h2>
+            <p className="text-xs text-stone-500 mt-1">
+              {t.assessment.fields.easyModeSubtitle}
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* 1. District Selection */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide">
                 {t.assessment.fields.district} *
               </label>
               <select
                 value={district}
-                onChange={(e) => setDistrict(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
+                onChange={(e) => handleDistrictChange(e.target.value)}
+                className="w-full px-4 py-3.5 rounded-2xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm font-semibold focus:border-emerald-600 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 transition-all cursor-pointer"
                 required
               >
                 <option value="Galle">Galle (ගාල්ල)</option>
@@ -251,361 +310,403 @@ export default function EstimatePage() {
                 <option value="Kegalle">Kegalle (කෑගල්ල)</option>
                 <option value="Kalutara">Kalutara (කළුතර)</option>
               </select>
+              <span className="text-[11px] text-stone-500 block">
+                Region: <strong className="text-stone-700">{growingRegion}</strong>
+              </span>
             </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                {t.assessment.fields.locality}
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. Neluwa, Deniyaya"
-                value={locality}
-                onChange={(e) => setLocality(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                {t.assessment.fields.elevation}
-              </label>
-              <select
-                value={elevationCategory}
-                onChange={(e) => setElevationCategory(e.target.value as any)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-              >
-                <option value="low">{t.elevation.low}</option>
-                <option value="mid">{t.elevation.mid}</option>
-                <option value="high">{t.elevation.high}</option>
-                <option value="unknown">{t.elevation.unknown}</option>
-              </select>
-            </div>
-
-            <div className="sm:col-span-2 md:col-span-3">
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                {t.assessment.fields.targetFactory}
-              </label>
-              <select
-                value={targetFactoryId}
-                onChange={(e) => setTargetFactoryId(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-              >
-                <option value="">-- Compare all eligible verified factories in {district} --</option>
-                {factories.map((f) => (
-                  <option key={f.factoryId || f.id} value={f.factoryId || f.id}>
-                    {f.factoryName || f.name} — {f.locality} ({f.hasEligiblePrice ? 'Active Price Verified' : 'Registered'})
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Step 2: Quantity & Weights */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 space-y-6 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)]">
-          <div className="flex items-center gap-3 border-b border-stone-100 pb-4">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center font-bold text-sm">
-              02
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-emerald-950 uppercase tracking-wide">
-                {t.assessment.steps.quantity}
-              </h2>
-              <span className="text-xs text-stone-500">Harvest and expected payable weights</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
+            {/* 2. Harvested Weight in KG with Quick Add Chips */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide">
                 {t.assessment.fields.harvestedWeight} *
               </label>
               <div className="relative">
                 <input
                   type="number"
                   min="1"
-                  step="0.5"
-                  value={harvestedWeightKg}
-                  onChange={(e) => setHarvestedWeightKg(Number(e.target.value))}
-                  className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm font-bold focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
+                  step="1"
+                  value={harvestedWeightKg || ''}
+                  onChange={(e) => setHarvestedWeightKg(Number(e.target.value) || 0)}
+                  className="w-full px-4 py-3.5 rounded-2xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-base font-extrabold focus:border-emerald-600 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 transition-all pr-12"
+                  placeholder="e.g. 100"
                   required
                 />
-                <span className="absolute right-4 top-3 text-xs text-emerald-700 font-bold">kg</span>
+                <span className="absolute right-4 top-3.5 text-xs text-emerald-800 font-bold">KG</span>
               </div>
-              <p className="text-[11px] text-stone-500 mt-1.5">
-                {t.assessment.fields.harvestedWeightHelp}
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                {t.assessment.fields.expectedAcceptedWeight}
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="1"
-                  step="0.5"
-                  placeholder="Optional accepted weight"
-                  value={expectedAcceptedWeightKg}
-                  onChange={(e) => setExpectedAcceptedWeightKg(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                />
-                <span className="absolute right-4 top-3 text-xs text-stone-400 font-bold">kg</span>
+              <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                <span className="text-[10px] text-stone-400 font-medium mr-1">{t.assessment.fields.quickWeightAdd}</span>
+                <button
+                  type="button"
+                  onClick={() => quickAddWeight(25)}
+                  className="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors cursor-pointer"
+                >
+                  +25 kg
+                </button>
+                <button
+                  type="button"
+                  onClick={() => quickAddWeight(50)}
+                  className="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors cursor-pointer"
+                >
+                  +50 kg
+                </button>
+                <button
+                  type="button"
+                  onClick={() => quickAddWeight(100)}
+                  className="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-colors cursor-pointer"
+                >
+                  +100 kg
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setHarvestedWeightKg(100)}
+                  className="px-2 py-1 text-[11px] font-medium rounded-lg text-stone-500 hover:text-stone-800 cursor-pointer"
+                >
+                  Reset (100kg)
+                </button>
               </div>
-              <p className="text-[11px] text-stone-500 mt-1.5">
-                {t.assessment.fields.expectedAcceptedWeightHelp}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Step 3: Harvest and Delivery Timings */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 space-y-6 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)]">
-          <div className="flex items-center gap-3 border-b border-stone-100 pb-4">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center font-bold text-sm">
-              03
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-emerald-950 uppercase tracking-wide">
-                {t.assessment.steps.harvest}
-              </h2>
-              <span className="text-xs text-stone-500">Transit duration telemetry (server calculated)</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                {t.assessment.fields.harvestTime} *
-              </label>
-              <input
-                type="datetime-local"
-                value={harvestTimestamp}
-                onChange={(e) => setHarvestTimestamp(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                {t.assessment.fields.deliveryTime} *
-              </label>
-              <input
-                type="datetime-local"
-                value={deliveryTimestamp}
-                onChange={(e) => setDeliveryTimestamp(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                required
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Step 4: Quality Observations */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 space-y-6 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)]">
-          <div className="flex items-center gap-3 border-b border-stone-100 pb-4">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center font-bold text-sm">
-              04
-            </div>
-            <div>
-              <h2 className="text-base font-bold text-emerald-950 uppercase tracking-wide">
-                {t.assessment.steps.quality}
-              </h2>
-              <span className="text-xs text-stone-500">Leaf grade, coarse matter, and packing</span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                {t.assessment.fields.goodLeaf}
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  placeholder="70"
-                  value={goodLeafPercentage}
-                  onChange={(e) => setGoodLeafPercentage(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                />
-                <span className="absolute right-4 top-3 text-xs text-emerald-700 font-bold">%</span>
-              </div>
-              <p className="text-[11px] text-stone-500 mt-1.5">{t.assessment.fields.goodLeafHelp}</p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                {t.assessment.fields.coarseLeaf}
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  placeholder="15"
-                  value={coarseLeafPercentage}
-                  onChange={(e) => setCoarseLeafPercentage(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                />
-                <span className="absolute right-4 top-3 text-xs text-stone-400 font-bold">%</span>
-              </div>
-              <p className="text-[11px] text-stone-500 mt-1.5">{t.assessment.fields.coarseLeafHelp}</p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                {t.assessment.fields.damagedLeaf}
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="0"
-                  max="100"
-                  placeholder="5"
-                  value={damagedLeafPercentage}
-                  onChange={(e) => setDamagedLeafPercentage(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                />
-                <span className="absolute right-4 top-3 text-xs text-stone-400 font-bold">%</span>
-              </div>
-              <p className="text-[11px] text-stone-500 mt-1.5">{t.assessment.fields.damagedLeafHelp}</p>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                {t.assessment.fields.surfaceCondition}
-              </label>
-              <select
-                value={surfaceCondition}
-                onChange={(e) => setSurfaceCondition(e.target.value as any)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
+          {/* 3. Overall Leaf Quality Level (3 Interactive Cards) */}
+          <div className="space-y-3 pt-2">
+            <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide">
+              {t.assessment.fields.qualityLabel}
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              {/* Preset: Super / Grade A */}
+              <button
+                type="button"
+                onClick={() => handleSelectQualityPreset('super')}
+                className={`p-4 rounded-2xl border text-left transition-all relative cursor-pointer ${
+                  qualityPreset === 'super'
+                    ? 'border-emerald-500 bg-emerald-50/80 ring-2 ring-emerald-500/30 shadow-sm'
+                    : 'border-stone-200 bg-white hover:border-emerald-200 hover:bg-emerald-50/20'
+                }`}
               >
-                <option value="dry">{t.assessment.fields.surfaceDry}</option>
-                <option value="wet">{t.assessment.fields.surfaceWet}</option>
-                <option value="unknown">{t.assessment.fields.surfaceUnknown}</option>
-              </select>
-            </div>
+                {qualityPreset === 'super' && (
+                  <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5" />
+                  </span>
+                )}
+                <div className="flex items-center gap-1.5 text-amber-500 mb-1">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+                </div>
+                <strong className="block text-sm font-bold text-emerald-950">
+                  {t.assessment.fields.qualitySuperTitle}
+                </strong>
+                <p className="text-xs text-stone-600 mt-1 leading-snug">
+                  {t.assessment.fields.qualitySuperDesc}
+                </p>
+                <span className="inline-block mt-2.5 text-[11px] font-bold text-emerald-700 bg-emerald-100/70 px-2 py-0.5 rounded-md">
+                  + Incentive Bonus
+                </span>
+              </button>
 
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                {t.assessment.fields.packagingCondition}
-              </label>
-              <select
-                value={packagingCondition}
-                onChange={(e) => setPackagingCondition(e.target.value as any)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
+              {/* Preset: Standard / Grade B */}
+              <button
+                type="button"
+                onClick={() => handleSelectQualityPreset('standard')}
+                className={`p-4 rounded-2xl border text-left transition-all relative cursor-pointer ${
+                  qualityPreset === 'standard'
+                    ? 'border-emerald-500 bg-emerald-50/80 ring-2 ring-emerald-500/30 shadow-sm'
+                    : 'border-stone-200 bg-white hover:border-emerald-200 hover:bg-emerald-50/20'
+                }`}
               >
-                <option value="loosely_packed">{t.assessment.fields.packagingLoosely}</option>
-                <option value="tightly_compressed">{t.assessment.fields.packagingCompressed}</option>
-                <option value="unknown">{t.assessment.fields.packagingUnknown}</option>
-              </select>
-            </div>
+                {qualityPreset === 'standard' && (
+                  <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5" />
+                  </span>
+                )}
+                <div className="flex items-center gap-1.5 text-amber-500 mb-1">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+                </div>
+                <strong className="block text-sm font-bold text-stone-900">
+                  {t.assessment.fields.qualityStandardTitle}
+                </strong>
+                <p className="text-xs text-stone-600 mt-1 leading-snug">
+                  {t.assessment.fields.qualityStandardDesc}
+                </p>
+                <span className="inline-block mt-2.5 text-[11px] font-bold text-stone-700 bg-stone-100 px-2 py-0.5 rounded-md">
+                  Benchmark Rate
+                </span>
+              </button>
 
-            <div className="flex items-center pt-6">
-              <label className="flex items-center gap-2.5 cursor-pointer text-xs font-medium text-stone-700">
-                <input
-                  type="checkbox"
-                  checked={isMeasuredSample}
-                  onChange={(e) => setIsMeasuredSample(e.target.checked)}
-                  className="rounded border-emerald-300 text-emerald-600 focus:ring-emerald-500 w-4 h-4"
-                />
-                <span>{t.assessment.fields.isMeasuredSample}</span>
-              </label>
+              {/* Preset: Coarse / Grade C */}
+              <button
+                type="button"
+                onClick={() => handleSelectQualityPreset('coarse')}
+                className={`p-4 rounded-2xl border text-left transition-all relative cursor-pointer ${
+                  qualityPreset === 'coarse'
+                    ? 'border-emerald-500 bg-emerald-50/80 ring-2 ring-emerald-500/30 shadow-sm'
+                    : 'border-stone-200 bg-white hover:border-emerald-200 hover:bg-emerald-50/20'
+                }`}
+              >
+                {qualityPreset === 'coarse' && (
+                  <span className="absolute top-3 right-3 w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center">
+                    <Check className="w-3.5 h-3.5" />
+                  </span>
+                )}
+                <div className="flex items-center gap-1.5 text-amber-500 mb-1">
+                  <Star className="w-4 h-4 fill-amber-400 text-amber-500" />
+                </div>
+                <strong className="block text-sm font-bold text-stone-900">
+                  {t.assessment.fields.qualityCoarseTitle}
+                </strong>
+                <p className="text-xs text-stone-600 mt-1 leading-snug">
+                  {t.assessment.fields.qualityCoarseDesc}
+                </p>
+                <span className="inline-block mt-2.5 text-[11px] font-bold text-amber-800 bg-amber-100/80 px-2 py-0.5 rounded-md">
+                  Base / Penalty Deductions
+                </span>
+              </button>
+            </div>
+          </div>
+
+          {/* 4. Surface Moisture (Dry vs Wet) */}
+          <div className="space-y-2 pt-2">
+            <label className="block text-xs font-bold text-stone-800 uppercase tracking-wide">
+              {t.assessment.fields.leafConditionLabel}
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+              <button
+                type="button"
+                onClick={() => setSurfaceCondition('dry')}
+                className={`p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                  surfaceCondition === 'dry'
+                    ? 'border-emerald-500 bg-emerald-50/80 ring-2 ring-emerald-500/30 shadow-sm'
+                    : 'border-stone-200 bg-white hover:border-emerald-200'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                    <Sun className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <strong className="block text-sm font-bold text-stone-900">
+                      {t.assessment.fields.leafConditionDry}
+                    </strong>
+                    <span className="text-[11px] text-stone-500">Normal weight accepted (No water tare)</span>
+                  </div>
+                </div>
+                {surfaceCondition === 'dry' && (
+                  <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                    <Check className="w-3.5 h-3.5" />
+                  </span>
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setSurfaceCondition('wet')}
+                className={`p-4 rounded-2xl border text-left flex items-center justify-between transition-all cursor-pointer ${
+                  surfaceCondition === 'wet'
+                    ? 'border-emerald-500 bg-emerald-50/80 ring-2 ring-emerald-500/30 shadow-sm'
+                    : 'border-stone-200 bg-white hover:border-emerald-200'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-cyan-100 text-cyan-700 flex items-center justify-center">
+                    <CloudRain className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <strong className="block text-sm font-bold text-stone-900">
+                      {t.assessment.fields.leafConditionWet}
+                    </strong>
+                    <span className="text-[11px] text-stone-500">Factory water tare deduction (~5%)</span>
+                  </div>
+                </div>
+                {surfaceCondition === 'wet' && (
+                  <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                    <Check className="w-3.5 h-3.5" />
+                  </span>
+                )}
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Step 5: Transport & Costs */}
-        <div className="bg-white rounded-3xl p-6 sm:p-8 space-y-6 border border-emerald-100 shadow-[0_4px_20px_-4px_rgba(6,78,59,0.06)]">
-          <div className="flex items-center gap-3 border-b border-stone-100 pb-4">
-            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center justify-center font-bold text-sm">
-              05
+        {/* Collapsible Advanced Settings (Optional for Power Users) */}
+        <div className="bg-white rounded-3xl border border-stone-200 overflow-hidden shadow-sm transition-all">
+          <button
+            type="button"
+            onClick={() => setShowAdvanced(!showAdvanced)}
+            className="w-full p-5 sm:px-8 flex items-center justify-between bg-stone-50/70 hover:bg-stone-100/70 text-left transition-colors cursor-pointer"
+          >
+            <div className="flex items-center gap-3">
+              <span className="w-7 h-7 rounded-lg bg-stone-200/80 text-stone-700 flex items-center justify-center text-xs font-bold">
+                ⚙️
+              </span>
+              <div>
+                <span className="text-xs sm:text-sm font-bold text-stone-800">
+                  {showAdvanced ? t.assessment.fields.advancedToggleHide : t.assessment.fields.advancedToggleShow}
+                </span>
+                <span className="text-[11px] text-stone-500 block">
+                  Target factory, exact percentages, transit duration, transport deductions
+                </span>
+              </div>
             </div>
-            <div>
-              <h2 className="text-base font-bold text-emerald-950 uppercase tracking-wide">
-                {t.assessment.steps.transport}
-              </h2>
-              <span className="text-xs text-stone-500">Local vehicle hire or route collection deductions</span>
+            {showAdvanced ? (
+              <ChevronUp className="w-5 h-5 text-stone-500" />
+            ) : (
+              <ChevronDown className="w-5 h-5 text-stone-500" />
+            )}
+          </button>
+
+          {showAdvanced && (
+            <div className="p-6 sm:p-8 space-y-6 border-t border-stone-100">
+              {/* Target Factory & Locality */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 mb-1.5">
+                    {t.assessment.fields.targetFactory}
+                  </label>
+                  <select
+                    value={targetFactoryId}
+                    onChange={(e) => setTargetFactoryId(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-xs focus:border-emerald-600 focus:bg-white transition-all"
+                  >
+                    <option value="">-- Auto-benchmark all factories in {district} --</option>
+                    {factories.map((f) => (
+                      <option key={f.factoryId || f.id} value={f.factoryId || f.id}>
+                        {f.factoryName || f.name} — {f.locality}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 mb-1.5">
+                    {t.assessment.fields.locality}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Neluwa, Deniyaya, Kuruwita"
+                    value={locality}
+                    onChange={(e) => setLocality(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-xs focus:border-emerald-600 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Exact Quality Percentages */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-stone-50/50 p-4 rounded-2xl border border-stone-200">
+                <div>
+                  <label className="block text-[11px] font-semibold text-stone-700 mb-1">
+                    {t.assessment.fields.goodLeaf}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={goodLeafPercentage}
+                    onChange={(e) => {
+                      setGoodLeafPercentage(e.target.value);
+                      setQualityPreset('standard');
+                    }}
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-stone-700 mb-1">
+                    {t.assessment.fields.coarseLeaf}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={coarseLeafPercentage}
+                    onChange={(e) => setCoarseLeafPercentage(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-stone-700 mb-1">
+                    {t.assessment.fields.damagedLeaf}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={damagedLeafPercentage}
+                    onChange={(e) => setDamagedLeafPercentage(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-stone-300 text-xs font-bold"
+                  />
+                </div>
+              </div>
+
+              {/* Transport Costs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    {t.assessment.fields.transportCostPerKg}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.5"
+                    value={transportCostPerKg}
+                    onChange={(e) => setTransportCostPerKg(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 bg-white text-xs font-bold"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-stone-700 mb-1">
+                    {t.assessment.fields.otherDeductions}
+                  </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="10"
+                    value={otherDeductions}
+                    onChange={(e) => setOtherDeductions(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 bg-white text-xs font-bold"
+                  />
+                </div>
+              </div>
+
+              {/* Notes */}
+              <div>
+                <label className="block text-xs font-semibold text-stone-700 mb-1">
+                  {t.assessment.fields.notes}
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Plucking condition, estate weather, notes..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full px-4 py-2.5 rounded-xl border border-emerald-200 bg-white text-xs"
+                />
+              </div>
             </div>
+          )}
+        </div>
+
+        {/* Google Gemini AI Valuation Toggle */}
+        <div className="bg-gradient-to-r from-emerald-950 via-teal-950 to-stone-900 rounded-3xl p-6 sm:p-7 text-white shadow-xl border border-emerald-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
+          <div className="space-y-1.5 max-w-xl">
+            <div className="inline-flex items-center gap-2 px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold uppercase tracking-wider border border-emerald-500/30">
+              <Sparkles className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+              <span>Google Gemini AI</span>
+            </div>
+            <h3 className="text-base sm:text-lg font-bold text-emerald-100">
+              {t.assessment.fields.geminiToggle}
+            </h3>
+            <p className="text-xs sm:text-sm text-stone-300 leading-relaxed">
+              {t.assessment.fields.geminiToggleHelp}
+            </p>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                {t.assessment.fields.transportCostPerKg}
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="0"
-                  step="0.5"
-                  value={transportCostPerKg}
-                  onChange={(e) => {
-                    setTransportCostPerKg(e.target.value);
-                    if (e.target.value) setTotalTransportCost('');
-                  }}
-                  className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                />
-                <span className="absolute right-4 top-3 text-xs text-emerald-700 font-bold">Rs/kg</span>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                {t.assessment.fields.totalTransportCost}
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="0"
-                  step="10"
-                  placeholder="Total hire cost"
-                  value={totalTransportCost}
-                  onChange={(e) => {
-                    setTotalTransportCost(e.target.value);
-                    if (e.target.value) setTransportCostPerKg('');
-                  }}
-                  className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                />
-                <span className="absolute right-4 top-3 text-xs text-stone-400 font-bold">LKR</span>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-stone-700 mb-1">
-                {t.assessment.fields.otherDeductions}
-              </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  min="0"
-                  step="10"
-                  value={otherDeductions}
-                  onChange={(e) => setOtherDeductions(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-                />
-                <span className="absolute right-4 top-3 text-xs text-stone-400 font-bold">LKR</span>
-              </div>
-            </div>
-
-            <div className="sm:col-span-3">
-              <label className="block text-xs font-semibold text-stone-700 mb-1.5">
-                {t.assessment.fields.notes}
-              </label>
-              <textarea
-                rows={2}
-                placeholder="Plucking condition, estate weather, or gate arrangements..."
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-emerald-200 bg-emerald-50/30 text-stone-900 text-sm focus:border-emerald-600 focus:bg-white focus:ring-1 focus:ring-emerald-600 transition-all"
-              />
-            </div>
-          </div>
+          <label className="relative inline-flex items-center cursor-pointer shrink-0">
+            <input
+              type="checkbox"
+              checked={useGemini}
+              onChange={(e) => setUseGemini(e.target.checked)}
+              className="sr-only peer"
+            />
+            <div className="w-14 h-8 bg-stone-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-emerald-500 shadow-inner"></div>
+          </label>
         </div>
 
         {/* Submit Action */}
@@ -628,22 +729,32 @@ export default function EstimatePage() {
             {/* Header Status */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-stone-100 pb-6">
               <div>
-                <span
-                  className={`inline-flex items-center gap-2 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider mb-2 ${
-                    result.status === 'personalized_estimate'
-                      ? 'bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm'
+                <div className="flex flex-wrap items-center gap-2 mb-2">
+                  <span
+                    className={`inline-flex items-center gap-2 text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wider ${
+                      result.status === 'personalized_estimate'
+                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200 shadow-sm'
+                        : result.status === 'market_reference_only'
+                        ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                        : 'bg-red-100 text-red-800 border border-red-200'
+                    }`}
+                  >
+                    <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
+                    {result.status === 'personalized_estimate'
+                      ? t.results.personalizedNotice
                       : result.status === 'market_reference_only'
-                      ? 'bg-amber-100 text-amber-800 border border-amber-200'
-                      : 'bg-red-100 text-red-800 border border-red-200'
-                  }`}
-                >
-                  <span className="w-2 h-2 rounded-full bg-current animate-pulse" />
-                  {result.status === 'personalized_estimate'
-                    ? t.results.personalizedNotice
-                    : result.status === 'market_reference_only'
-                    ? t.results.referenceNotice
-                    : t.results.unavailableNotice}
-                </span>
+                      ? t.results.referenceNotice
+                      : t.results.unavailableNotice}
+                  </span>
+
+                  {result.valuationEngine === 'gemini_ai' && (
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold text-xs shadow-sm uppercase tracking-wider">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      {t.results.geminiPowered}
+                    </span>
+                  )}
+                </div>
+
                 <h2 className="text-2xl sm:text-4xl font-extrabold text-emerald-950 tracking-tight">
                   {t.results.title}
                 </h2>
@@ -720,6 +831,60 @@ export default function EstimatePage() {
                 </div>
               </div>
             </div>
+
+            {/* Gemini System Notice if present */}
+            {geminiNotice && (
+              <div className="bg-amber-50/90 border border-amber-200/90 p-4 rounded-2xl text-amber-900 text-xs flex items-start gap-3 shadow-sm">
+                <Info className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                <div className="leading-relaxed">
+                  <strong className="font-bold">Gemini API Status:</strong> {geminiNotice}
+                </div>
+              </div>
+            )}
+
+            {/* Google Gemini AI Market Intelligence HUD Card */}
+            {result.geminiAnalysis && (
+              <div className="bg-gradient-to-br from-emerald-50/90 via-teal-50/50 to-white rounded-2xl p-6 sm:p-7 border border-emerald-200 shadow-sm space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-emerald-100/90 pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-sm">
+                      <Sparkles className="w-4 h-4 text-emerald-100" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-emerald-950 uppercase tracking-wide">
+                        {t.results.geminiAnalysisTitle}
+                      </h3>
+                      <span className="text-[11px] text-stone-500">
+                        {result.geminiAnalysis.benchmarkSource || 'Sri Lanka Tea Board Market Framework'}
+                      </span>
+                    </div>
+                  </div>
+                  {result.geminiAnalysis.confidenceScore && (
+                    <span className="self-start sm:self-auto text-[11px] font-extrabold px-3 py-1 rounded-full bg-emerald-100/90 text-emerald-800 border border-emerald-200 uppercase tracking-wider">
+                      {t.results.geminiConfidence}: {result.geminiAnalysis.confidenceScore}
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-4">
+                  <p className="text-xs sm:text-sm text-stone-800 leading-relaxed font-medium">
+                    {language === 'si' ? result.geminiAnalysis.summarySi : result.geminiAnalysis.summaryEn}
+                  </p>
+
+                  {result.geminiAnalysis.qualityAdviceEn && (
+                    <div className="bg-white/80 rounded-xl p-4 border border-emerald-100 text-xs space-y-1.5 shadow-[0_2px_10px_-4px_rgba(6,78,59,0.06)]">
+                      <strong className="text-emerald-950 font-bold flex items-center gap-1.5 uppercase tracking-wider text-[11px]">
+                        <TrendingUp className="w-3.5 h-3.5 text-emerald-600" />
+                        {t.results.geminiAdviceTitle}
+                      </strong>
+                      <p className="text-stone-600 leading-relaxed">
+                        {language === 'si' ? result.geminiAnalysis.qualityAdviceSi : result.geminiAnalysis.qualityAdviceEn}
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Applied Rules */}
             <div className="space-y-4">

@@ -60,6 +60,18 @@ class MemoryDbStore {
   ];
   users: UserRecord[] = [
     {
+      id: 'usr-superadmin-1',
+      name: 'Super Admin',
+      email: 'superadmin@gmail.com',
+      role: 'admin',
+      district: 'Galle',
+      locality: 'Neluwa',
+      elevationCategory: 'low',
+      preferredLanguage: 'en',
+      createdAt: '2026-10-11T00:00:00Z',
+      status: 'active',
+    },
+    {
       id: 'usr-admin-1',
       name: 'System Admin',
       email: 'admin@teavalue.lk',

@@ -41,7 +41,14 @@ export interface StoredAccount {
 const memoryAccounts: Map<string, StoredAccount> =
   (globalThis as any).__teaValueMemoryAccounts ||
   new Map<string, StoredAccount>([
-    // Seed initial demo admin & farmer hashes
+    [
+      'superadmin@gmail.com',
+      {
+        userId: 'usr-superadmin-1',
+        email: 'superadmin@gmail.com',
+        passwordHash: hashPassword('admin123'),
+      },
+    ],
     [
       'admin@teavalue.lk',
       {
@@ -191,6 +198,15 @@ export async function getCurrentUser(): Promise<UserRecord | null> {
     if (!session) return null;
     if (new Date(session.expiresAt).getTime() < Date.now()) {
       return null;
+    }
+
+    // Always fetch fresh user record from database so role/status changes reflect immediately
+    if (conn.isMongo && conn.db) {
+      const freshUser = await conn.db.collection<UserRecord>('users').findOne({ id: session.user.id });
+      if (freshUser) return freshUser;
+    } else {
+      const freshUser = conn.memory.users.find((u) => u.id === session.user.id);
+      if (freshUser) return freshUser;
     }
 
     return session.user;

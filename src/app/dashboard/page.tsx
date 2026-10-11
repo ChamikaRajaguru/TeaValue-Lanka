@@ -32,7 +32,14 @@ export default function DashboardPage() {
   useEffect(() => {
     try {
       const cached = localStorage.getItem('teavalue_user');
-      if (cached) setUser(JSON.parse(cached));
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed.role === 'admin') {
+          router.push('/admin');
+          return;
+        }
+        setUser(parsed);
+      }
     } catch (e) {}
 
     Promise.all([
@@ -42,6 +49,10 @@ export default function DashboardPage() {
     ])
       .then(([userData, estimatesData]) => {
         if (userData.authenticated && userData.user) {
+          if (userData.user.role === 'admin') {
+            router.push('/admin');
+            return;
+          }
           setUser(userData.user);
           try {
             localStorage.setItem('teavalue_user', JSON.stringify(userData.user));
